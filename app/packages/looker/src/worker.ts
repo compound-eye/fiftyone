@@ -242,6 +242,10 @@ const processLabels = async (
   return Promise.all(promises).then(() => buffers);
 };
 
+function clamp(min: number, max: number, value: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
 /** GLOBALS */
 
 const HIGH_WATER_MARK = 6;
@@ -505,30 +509,28 @@ const UPDATE_LABEL = {
       ? [0, 1]
       : [0, 255];
 
-    const max = Math.max(Math.abs(start), Math.abs(stop));
-
     const color = await requestColor(coloring.pool, coloring.seed, field);
 
     const getColor =
       coloring.by === "label"
-        ? (value) => {
-            if (value === 0) {
+        ? // If coloring by label, lookup the index from the colormap
+          (value) => {
+            if (isNaN(value)) {
               return 0;
             }
 
             const index = Math.round(
-              (Math.max(value - start, 0) / (stop - start)) *
-                (coloring.scale.length - 1)
+              ((value - start) / (stop - start)) * (coloring.scale.length - 1)
             );
-
-            return get32BitColor(coloring.scale[index]);
-          }
-        : (value) => {
-            if (value === 0) {
+            if (index < 0 || index >= coloring.scale.length) {
               return 0;
             }
-
-            return get32BitColor(color, Math.min(max, Math.abs(value)) / max);
+            return get32BitColor(coloring.scale[index]);
+          }
+        : // If coloring by field, convert value to alpha
+          (value) => {
+            const alpha = clamp(0, 1, (value - start) / (stop - start));
+            return get32BitColor(color, alpha);
           };
 
     // these for loops must be fast. no "in" or "of" syntax
