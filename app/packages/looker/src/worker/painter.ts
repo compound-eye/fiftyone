@@ -8,6 +8,10 @@ import {
   RgbMaskTargets,
 } from "../state";
 
+function clamp(min: number, max: number, value: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
 export const PainterFactory = (requestColor) => ({
   Detection: async (
     field,
@@ -120,30 +124,21 @@ export const PainterFactory = (requestColor) => ({
     const getColor =
       coloring.by === "value"
         ? (value) => {
-            if (value === 0) {
-              return 0;
-            }
+          if (isNaN(value)) {
+            return 0;
+          }
 
             const index = Math.round(
-              (Math.max(value - start, 0) / (stop - start)) *
-                (coloring.scale.length - 1)
+              ((value - start) / (stop - start)) * (coloring.scale.length - 1)
             );
+            if (index < 0 || index >= coloring.scale.length) {
+              return 0;
+            }
 
             return get32BitColor(coloring.scale[index]);
           }
         : (value) => {
-            // render in field’s color with opacity proportional to the magnitude of the heatmap’s value
-            const absMax = Math.max(Math.abs(start), Math.abs(stop));
-
-            // clip value
-            if (value < start) {
-              value = start;
-            } else if (value > stop) {
-              value = stop;
-            }
-
-            const alpha = Math.abs(value) / absMax;
-
+            const alpha = clamp(0, 1, (value - start) / (stop - start));
             return get32BitColor(color, alpha);
           };
 
