@@ -120,7 +120,7 @@ export const TooltipInfo = React.memo(() => {
           {detail.label.tags && detail.label.tags.length > 0 && (
             <TagInfo key={"tags"} tags={detail.label?.tags} />
           )}
-          <AllLayerInfo key={"attrs"} detail={detail} />
+          <AllOverlayInfo key={"attrs"} detail={detail} />
         </TooltipDiv>,
         document.body
       )
@@ -269,17 +269,19 @@ const PolylineInfo = ({ detail }) => {
   );
 };
 
-function AllLayerInfo(props: {
-  detail: { color: string; target: any; layers: any[] };
+/** Component that lists values from all overlays of the hovered item */
+function AllOverlayInfo(props: {
+  detail: { color: string; target: any; overlayDetails: any[] };
 }): JSX.Element {
   const { detail } = props;
+  const { overlayDetails = [] } = detail;
   return (
     <AttrBlock style={{ borderColor: detail.color }}>
-      {detail.layers.map((layer) => (
+      {overlayDetails.map((overlay) => (
         <ContentItem
-          key={`pixel-value-${layer.field}`}
-          name={layer.field}
-          value={layer.target}
+          key={`pixel-value-${overlay.field}`}
+          name={overlay.field}
+          value={overlay.target}
         />
       ))}
     </AttrBlock>
