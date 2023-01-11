@@ -55,7 +55,7 @@ const ContentItem = ({
         {(() => {
           switch (typeof value) {
             case "number":
-              return Number.isInteger(value) ? value : value.toFixed(3);
+              return Number.isInteger(value) ? value : value.toPrecision(4);
             case "string":
               return value.length ? value : '""';
             case "boolean":
@@ -108,9 +108,8 @@ export const TooltipInfo = React.memo(() => {
     display: detail ? "block" : "none",
     opacity: detail ? 1 : 0,
   });
-  const Component = detail ? OVERLAY_INFO[detail.type] : null;
 
-  return Component
+  return detail
     ? ReactDOM.createPortal(
         <TooltipDiv
           style={{ ...coordsProps, ...showProps, position: "fixed" }}
@@ -121,7 +120,7 @@ export const TooltipInfo = React.memo(() => {
           {detail.label.tags && detail.label.tags.length > 0 && (
             <TagInfo key={"tags"} tags={detail.label?.tags} />
           )}
-          <Component key={"attrs"} detail={detail} />
+          <AllLayerInfo key={"attrs"} detail={detail} />
         </TooltipDiv>,
         document.body
       )
@@ -269,6 +268,23 @@ const PolylineInfo = ({ detail }) => {
     </AttrBlock>
   );
 };
+
+function AllLayerInfo(props: {
+  detail: { color: string; target: any; layers: any[] };
+}): JSX.Element {
+  const { detail } = props;
+  return (
+    <AttrBlock style={{ borderColor: detail.color }}>
+      {detail.layers.map((layer) => (
+        <ContentItem
+          key={`pixel-value-${layer.field}`}
+          name={layer.field}
+          value={layer.target}
+        />
+      ))}
+    </AttrBlock>
+  );
+}
 
 const OVERLAY_INFO = {
   Classification: ClassificationInfo,

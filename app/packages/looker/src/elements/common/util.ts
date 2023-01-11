@@ -25,22 +25,25 @@ export const dispatchTooltipEvent = <State extends BaseState>(
       return;
     }
 
-    let detail =
-      overlays.length && overlays[0].containsPoint(state) && !nullify
-        ? overlays[0].getPointInfo(state)
-        : null;
+    // Point details for all overlays
+    let layers = !nullify
+      ? overlays
+          .filter((overlay) => overlay.containsPoint(state))
+          .map((overlay) => overlay.getPointInfo(state))
+      : [];
 
     // @ts-ignore
-    if (state.frameNumber && detail) {
+    if (state.frameNumber) {
       // @ts-ignore
-      detail.frameNumber = state.frameNumber;
+      layers.forEach((detail) => (detail.frameNumber = state.frameNumber));
     }
     dispatchEvent(
       "tooltip",
-      detail
+      layers.length > 0
         ? {
-            ...detail,
+            ...layers[0], // for compatibility
             coordinates: state.cursorCoordinates,
+            layers,
           }
         : null
     );
