@@ -58,7 +58,7 @@ export const ContentItem = ({
         {(() => {
           switch (typeof value) {
             case "number":
-              return Number.isInteger(value) ? value : value.toFixed(3);
+              return Number.isInteger(value) ? value : value.toPrecision(4);
             case "string":
               return value.length ? value : '""';
             case "boolean":
@@ -113,9 +113,8 @@ export const TooltipInfo = React.memo(() => {
     display: detail ? "block" : "none",
     opacity: detail ? 1 : 0,
   });
-  const Component = detail ? OVERLAY_INFO[detail.type] : null;
 
-  return Component
+  return detail
     ? ReactDOM.createPortal(
         <TooltipDiv
           style={{ ...coordsProps, ...showProps, position: "fixed" }}
@@ -126,7 +125,7 @@ export const TooltipInfo = React.memo(() => {
           {detail.label.tags && detail.label.tags.length > 0 && (
             <TagInfo key={"tags"} tags={detail.label?.tags} />
           )}
-          <Component key={"attrs"} detail={detail} />
+          <AllOverlayInfo key={"attrs"} detail={detail} />
         </TooltipDiv>,
         document.body
       )
@@ -289,6 +288,25 @@ const PolylineInfo = ({ detail }) => {
     </AttrBlock>
   );
 };
+
+/** Component that lists values from all overlays of the hovered item */
+function AllOverlayInfo(props: {
+  detail: { color: string; target: any; overlayDetails: any[] };
+}): JSX.Element {
+  const { detail } = props;
+  const { overlayDetails = [] } = detail;
+  return (
+    <AttrBlock style={{ borderColor: detail.color }}>
+      {overlayDetails.map((overlay) => (
+        <ContentItem
+          key={`pixel-value-${overlay.field}`}
+          name={overlay.field}
+          value={overlay.target}
+        />
+      ))}
+    </AttrBlock>
+  );
+}
 
 const OVERLAY_INFO = {
   Classification: ClassificationInfo,
