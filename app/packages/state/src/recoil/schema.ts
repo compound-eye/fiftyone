@@ -472,7 +472,7 @@ export const labelPath = selectorFamily<string, string>({
 
 export const _activeFields = atomFamily<string[], { modal: boolean }>({
   key: "_activeFields",
-  default: null,
+  default: [],
 });
 
 export const activeFields = selectorFamily<string[], { modal: boolean }>({
