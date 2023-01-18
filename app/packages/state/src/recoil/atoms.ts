@@ -136,7 +136,7 @@ export const viewCounter = atom({
   default: 0,
 });
 
-export const DEFAULT_ALPHA = 0.7;
+export const DEFAULT_ALPHA = 1.0;
 
 export const alpha = atomFamily<number, boolean>({
   key: "alpha",
