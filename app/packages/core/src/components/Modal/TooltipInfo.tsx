@@ -294,16 +294,24 @@ function AllOverlayInfo(props: {
   detail: { color: string; target: any; overlayDetails: any[] };
 }): JSX.Element {
   const { detail } = props;
+  const getTarget = useRecoilValue(fos.getTarget);
   const { overlayDetails = [] } = detail;
+
   return (
     <AttrBlock style={{ borderColor: detail.color }}>
-      {overlayDetails.map((overlay) => (
-        <ContentItem
-          key={`pixel-value-${overlay.field}`}
-          name={overlay.field}
-          value={overlay.target}
-        />
-      ))}
+      {overlayDetails.map((overlay) => {
+        const value =
+          overlay.type === "Segmentation"
+            ? getTarget(overlay.field, overlay.target)
+            : overlay.target;
+        return (
+          <ContentItem
+            key={`pixel-value-${overlay.field}`}
+            name={overlay.field}
+            value={value}
+          />
+        );
+      })}
     </AttrBlock>
   );
 }
