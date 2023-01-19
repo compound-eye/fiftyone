@@ -541,3 +541,7 @@ export const getMimeType = (sample: any) => {
 
 export const isFloatArray = (arr) =>
   arr instanceof Float32Array || arr instanceof Float64Array;
+
+export function clamp(min: number, max: number, value: number) {
+  return Math.min(Math.max(value, min), max);
+}

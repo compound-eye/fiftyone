@@ -13,6 +13,7 @@ import {
 import { CHUNK_SIZE } from "./constants";
 import { ARRAY_TYPES, deserialize } from "./numpy";
 import { Coloring, FrameChunk } from "./state";
+import { clamp } from "./util";
 
 interface ResolveColor {
   key: string | number;
@@ -164,10 +165,6 @@ const processLabels = (
 
   return Promise.all(promises).then(() => buffers);
 };
-
-function clamp(min: number, max: number, value: number) {
-  return Math.min(Math.max(value, min), max);
-}
 
 /** GLOBALS */
 
@@ -442,12 +439,13 @@ const UPDATE_LABEL = {
               return 0;
             }
 
-            const index = Math.round(
-              ((value - start) / (stop - start)) * (coloring.scale.length - 1)
+            const index = clamp(
+              0,
+              coloring.scale.length - 1,
+              Math.round(
+                ((value - start) / (stop - start)) * (coloring.scale.length - 1)
+              )
             );
-            if (index < 0 || index >= coloring.scale.length) {
-              return 0;
-            }
             return get32BitColor(coloring.scale[index]);
           }
         : // If coloring by field, convert value to alpha
@@ -458,9 +456,7 @@ const UPDATE_LABEL = {
 
     // these for loops must be fast. no "in" or "of" syntax
     for (let i = 0; i < overlay.length; i++) {
-      if (targets[i] !== 0) {
-        overlay[i] = getColor(targets[i]);
-      }
+      overlay[i] = getColor(targets[i]);
     }
   },
   Segmentation: async (field, label, coloring) => {
@@ -498,9 +494,7 @@ const UPDATE_LABEL = {
 
     // these for loops must be fast. no "in" or "of" syntax
     for (let i = 0; i < overlay.length; i++) {
-      if (targets[i] !== 0) {
-        overlay[i] = color ? color : getColor(targets[i]);
-      }
+      overlay[i] = color ? color : getColor(targets[i]);
     }
   },
 };

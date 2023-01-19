@@ -78,7 +78,7 @@ export default class SegmentationOverlay<State extends BaseState>
       pixelCoordinates: [x, y],
       dimensions: [w, h],
     } = state;
-    if (x >= 0 && x <= w && y >= 0 && y <= h && this.getTarget(state)) {
+    if (x >= 0 && x <= w && y >= 0 && y <= h) {
       return CONTAINS.CONTENT;
     }
     return CONTAINS.NONE;
