@@ -7,10 +7,7 @@ import {
   MaskTargets,
   RgbMaskTargets,
 } from "../state";
-
-function clamp(min: number, max: number, value: number) {
-  return Math.min(Math.max(value, min), max);
-}
+import { clamp } from "../util";
 
 export const PainterFactory = (requestColor) => ({
   Detection: async (

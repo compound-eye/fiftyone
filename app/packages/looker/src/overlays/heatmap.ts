@@ -9,7 +9,7 @@ import {
 } from "@fiftyone/utilities";
 import { ARRAY_TYPES, OverlayMask, TypedArray } from "../numpy";
 import { BaseState, Coordinates } from "../state";
-import { isFloatArray } from "../util";
+import { clamp, isFloatArray } from "../util";
 import {
   BaseLabel,
   CONTAINS,
@@ -93,7 +93,7 @@ export default class HeatmapOverlay<State extends BaseState>
       pixelCoordinates: [x, y],
       dimensions: [w, h],
     } = state;
-    if (x >= 0 && x <= w && y >= 0 && y <= h && this.getTarget(state)) {
+    if (x >= 0 && x <= w && y >= 0 && y <= h) {
       return CONTAINS.CONTENT;
     }
     return CONTAINS.NONE;
@@ -199,14 +199,18 @@ export default class HeatmapOverlay<State extends BaseState>
   private getColor(state: Readonly<State>, value: number): number {
     const [start, stop] = this.range;
 
-    if (value === 0) {
+    if (isNaN(value)) {
       return 0;
     }
 
     if (state.options.coloring.by === "value") {
-      const index = Math.round(
-        (Math.max(value - start, 0) / (stop - start)) *
-          (state.options.coloring.scale.length - 1)
+      const index = clamp(
+        0,
+        state.options.coloring.scale.length - 1,
+        Math.round(
+          ((value - start) / (stop - start)) *
+            (state.options.coloring.scale.length - 1)
+        )
       );
 
       return get32BitColor(state.options.coloring.scale[index]);
