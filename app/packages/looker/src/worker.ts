@@ -3,6 +3,7 @@
  */
 
 import {
+  clamp,
   LABEL_LIST,
   VALID_LABEL_TYPES,
   getFetchFunction,
@@ -13,7 +14,6 @@ import {
 import { CHUNK_SIZE } from "./constants";
 import { ARRAY_TYPES, deserialize } from "./numpy";
 import { Coloring, FrameChunk } from "./state";
-import { clamp } from "./util";
 
 interface ResolveColor {
   key: string | number;
