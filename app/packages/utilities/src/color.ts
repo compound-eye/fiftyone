@@ -202,3 +202,7 @@ export const getColor = (
 ) => {
   return createColorGenerator(pool, seed)(fieldOrValue);
 };
+
+export function clamp(min: number, max: number, value: number) {
+  return Math.min(Math.max(value, min), max);
+}
