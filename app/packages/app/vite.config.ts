@@ -6,6 +6,9 @@ import relay from "vite-plugin-relay";
 export default defineConfig(({ mode }) => {
   return {
     base: mode === "desktop" ? "" : "/",
+    build: {
+      sourcemap: true
+    },
     plugins: [
       reactRefresh({
         parserPlugins: ["classProperties", "classPrivateProperties"],
