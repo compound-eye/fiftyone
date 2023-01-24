@@ -1,4 +1,4 @@
-import { get32BitColor, rgbToHexCached } from "@fiftyone/utilities";
+import { clamp, get32BitColor, rgbToHexCached } from "@fiftyone/utilities";
 import { ARRAY_TYPES, OverlayMask, TypedArray } from "../numpy";
 import { isRgbMaskTargets } from "../overlays/util";
 import {
@@ -7,7 +7,6 @@ import {
   MaskTargets,
   RgbMaskTargets,
 } from "../state";
-import { clamp } from "../util";
 
 export const PainterFactory = (requestColor) => ({
   Detection: async (

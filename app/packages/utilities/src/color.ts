@@ -225,6 +225,10 @@ export const getColor = (
   return createColorGenerator(pool ?? default_app_color, seed)(fieldOrValue);
 };
 
+export function clamp(min: number, max: number, value: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
 // a function to convert a hex color to a rgb color
 export const hexToRgb = (hex: string): RGB => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
