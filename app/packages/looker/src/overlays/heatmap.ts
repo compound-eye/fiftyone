@@ -2,6 +2,7 @@
  * Copyright 2017-2023, Voxel51, Inc.
  */
 import {
+  clamp,
   get32BitColor,
   getColor,
   getRGBA,
@@ -9,7 +10,7 @@ import {
 } from "@fiftyone/utilities";
 import { ARRAY_TYPES, OverlayMask, TypedArray } from "../numpy";
 import { BaseState, Coordinates } from "../state";
-import { clamp, isFloatArray } from "../util";
+import { isFloatArray } from "../util";
 import {
   BaseLabel,
   CONTAINS,

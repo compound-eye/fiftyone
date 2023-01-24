@@ -549,10 +549,6 @@ export const getMimeType = (sample: any) => {
 export const isFloatArray = (arr) =>
   arr instanceof Float32Array || arr instanceof Float64Array;
 
-export function clamp(min: number, max: number, value: number) {
-  return Math.min(Math.max(value, min), max);
-}
-
 // go through customizedColor array and check if any item.fieldColor has changed;
 export const hasColorChanged = (
   prevColorScheme: CustomizeColor[],
