@@ -328,6 +328,7 @@ class DatasetAppConfig(EmbeddedDocument):
         EmbeddedDocumentField(SidebarGroupDocument), default=None
     )
     plugins = DictField()
+    grid_thumbnail_fields = DictField()
 
     @staticmethod
     def default_sidebar_groups(sample_collection):

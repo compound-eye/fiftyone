@@ -29,6 +29,7 @@ const DatasetQuery = graphql`
           paths
           name
         }
+        gridThumbnailFields
       }
       sampleFields {
         ftype
@@ -102,6 +103,7 @@ const DatasetQuery = graphql`
           paths
         }
         sidebarMode
+        gridThumbnailFields
       }
       info
     }

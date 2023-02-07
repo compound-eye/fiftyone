@@ -90,6 +90,7 @@ export namespace State {
     plugins?: PluginConfig;
     sidebarGroups?: SidebarGroup[];
     sidebarMode?: "all" | "best" | "fast";
+    gridThumbnailFields?: { [field: string]: string };
   }
   export interface Dataset {
     id: string;
