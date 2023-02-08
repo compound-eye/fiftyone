@@ -121,6 +121,7 @@ export namespace State {
     sidebarGroups?: SidebarGroup[];
     sidebarMode?: "all" | "best" | "fast";
     colorScheme?: ColorScheme;
+    gridThumbnailFields?: { [field: string]: string };
   }
 
   /**

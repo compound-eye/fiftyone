@@ -278,6 +278,9 @@ class DatasetAppConfig(EmbeddedDocument):
             -   ``"point-cloud"``: See the
                 :ref:`3D visualizer docs <app-3d-visualizer-config>` for
                 supported options
+        grid_thumbnail_fields ({}): an optional dict mapping sample fields to
+            sample thumbnail fields (where the thumbnail fields contain string
+            paths to the thumbnail images on disk)
     """
 
     # strict=False lets this class ignore unknown fields from other versions
@@ -292,6 +295,7 @@ class DatasetAppConfig(EmbeddedDocument):
     )
     color_scheme = EmbeddedDocumentField(ColorScheme, default=None)
     plugins = DictField()
+    grid_thumbnail_fields = DictField()
 
     @staticmethod
     def default_sidebar_groups(sample_collection):

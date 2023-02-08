@@ -71,6 +71,7 @@ export const DatasetNodeQuery = graphql`
             }
           }
         }
+        gridThumbnailFields
       }
       sampleFields {
         ftype
