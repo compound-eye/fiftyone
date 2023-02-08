@@ -202,7 +202,7 @@ export abstract class Looker<
   }
 
   loadOverlays(sample: Sample): void {
-    this.sampleOverlays = loadOverlays(sample);
+    this.sampleOverlays = loadOverlays(this.state, sample);
   }
 
   pluckOverlays(state: Readonly<State>): Overlay<State>[] {
@@ -932,7 +932,7 @@ const { acquireReader, addFrame } = (() => {
           Object.entries(frameSample).map(([k, v]) => ["frames." + k, v])
         );
 
-        const overlays = loadOverlays(prefixedFrameSample);
+        const overlays = loadOverlays(null, prefixedFrameSample);
         overlays.forEach((overlay) => {
           streamSize += overlay.getSizeBytes();
         });
@@ -1143,6 +1143,7 @@ export class VideoLooker extends Looker<VideoState, VideoSample> {
 
   loadOverlays(sample: VideoSample) {
     this.sampleOverlays = loadOverlays(
+      this.state,
       Object.fromEntries(
         Object.entries(sample).filter(([fieldName]) => fieldName !== "frames")
       ),
@@ -1154,6 +1155,7 @@ export class VideoLooker extends Looker<VideoState, VideoSample> {
       : [{ frame_number: 1 }];
     const providedFrameOverlays = providedFrames.map((frameSample) =>
       loadOverlays(
+        this.state,
         Object.fromEntries(
           Object.entries(frameSample).map(([k, v]) => ["frames." + k, v])
         )

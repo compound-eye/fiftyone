@@ -14,10 +14,10 @@ import HeatmapOverlay, { getHeatmapPoints } from "./heatmap";
 import KeypointOverlay, { getKeypointPoints } from "./keypoint";
 import PolylineOverlay, { getPolylinePoints } from "./polyline";
 import SegmentationOverlay, { getSegmentationPoints } from "./segmentation";
+import ThumbnailOverlay from "./thumbnail";
 
-const fromLabel = (overlayType) => (field, label) => [
-  new overlayType(field, label),
-];
+const fromLabel = (overlayType) => (field, label) =>
+  [new overlayType(field, label)];
 
 const fromLabelList = (overlayType, list_key) => (field, labels) =>
   labels[list_key].map((label) => new overlayType(field, label));
@@ -47,6 +47,7 @@ export const POINTS_FROM_FO = {
 };
 
 export const loadOverlays = <State extends BaseState>(
+  state: State | null,
   sample: {
     [key: string]: any;
   },
@@ -61,7 +62,7 @@ export const loadOverlays = <State extends BaseState>(
     }
 
     if (label._cls in FROM_FO) {
-      const labelOverlays = FROM_FO[label._cls](field, label, this);
+      const labelOverlays = FROM_FO[label._cls](field, label);
       overlays = [...overlays, ...labelOverlays];
     } else if (LABEL_TAGS_CLASSES.includes(label._cls)) {
       classifications.push([
@@ -70,6 +71,23 @@ export const loadOverlays = <State extends BaseState>(
           ? label[LABEL_LISTS_MAP[label._cls]]
           : [label],
       ]);
+    }
+  }
+
+  // Include any grid thumbnails
+  if (state?.config.thumbnail) {
+    const gridThumbnailFields =
+      state?.config?.appConfig?.gridThumbnailFields ?? {};
+    for (const [fieldName, thumbnailFieldName] of Object.entries(
+      gridThumbnailFields
+    )) {
+      overlays.push(
+        new ThumbnailOverlay(
+          fieldName,
+          thumbnailFieldName,
+          sample[thumbnailFieldName]
+        )
+      );
     }
   }
 

@@ -1,6 +1,6 @@
-import { FlashlightConfig } from "@fiftyone/flashlight";
 import { useCallback } from "react";
 
+import { FlashlightConfig } from "@fiftyone/flashlight";
 import * as fos from "@fiftyone/state";
 
 export default <T extends fos.Lookers>(store: fos.LookerStore<T>) => {
