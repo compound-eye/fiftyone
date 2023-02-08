@@ -1,6 +1,3 @@
-/**
- * Copyright 2017-2022, Voxel51, Inc.
- */
 import { getFetchOrigin, getFetchPathPrefix } from "@fiftyone/utilities";
 
 import {
@@ -45,10 +42,12 @@ export default class ThumbnailOverlay<State extends BaseState>
     const [brx, bry] = t(state, 1, 1);
     const tmp = ctx.globalAlpha;
     ctx.globalAlpha = state.options.alpha;
-    console.log("ThumbnailOverlay.draw", tlx, tly, brx - tlx, bry - tly);
     ctx.drawImage(this.image, tlx, tly, brx - tlx, bry - tly);
     ctx.globalAlpha = tmp;
   }
+
+  // There is no need to support the remaining methods, as the ThumbnailOverlay
+  // won't be used in a modal, and won't need to interact.
 
   getMouseDistance(_state: Readonly<State>): number {
     return Infinity;
