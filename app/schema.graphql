@@ -142,6 +142,7 @@ type DatasetAppConfig {
   sidebarMode: SidebarMode
   modalMediaField: String
   gridMediaField: String
+  gridThumbnailFields: JSON
 }
 
 type DatasetStrConnection {

@@ -140,6 +140,7 @@ class DatasetAppConfig:
     sidebar_mode: t.Optional[SidebarMode]
     modal_media_field: t.Optional[str] = gql.field(default="filepath")
     grid_media_field: t.Optional[str] = "filepath"
+    grid_thumbnail_fields: t.Optional[JSON]
 
 
 @gql.type

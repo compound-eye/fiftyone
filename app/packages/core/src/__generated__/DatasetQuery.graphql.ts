@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a2f8d4a86d8e3c6654edba23aa04eab9>>
+ * @generated SignedSource<<7b381c50a6a746c1c62f2054176fef9c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type DatasetQuery$data = {
   readonly dataset: {
     readonly appConfig: {
       readonly gridMediaField: string | null;
+      readonly gridThumbnailFields: object | null;
       readonly mediaFields: ReadonlyArray<string>;
       readonly plugins: object | null;
       readonly sidebarGroups: ReadonlyArray<{
@@ -357,6 +358,13 @@ v17 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
+            "name": "gridThumbnailFields",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
             "name": "sidebarMode",
             "storageKey": null
           }
@@ -596,16 +604,16 @@ return {
     "selections": (v17/*: any*/)
   },
   "params": {
-    "cacheID": "3226eb44467b4f22960c95abc34dab11",
+    "cacheID": "3fb49422cab6144e41e2c7915f48fdb0",
     "id": null,
     "metadata": {},
     "name": "DatasetQuery",
     "operationKind": "query",
-    "text": "query DatasetQuery(\n  $name: String!\n  $view: BSONArray = null\n) {\n  dataset(name: $name, view: $view) {\n    id\n    name\n    mediaType\n    defaultGroupSlice\n    groupField\n    groupMediaTypes {\n      name\n      mediaType\n    }\n    appConfig {\n      gridMediaField\n      mediaFields\n      plugins\n      sidebarGroups {\n        expanded\n        paths\n        name\n      }\n      sidebarMode\n    }\n    sampleFields {\n      ftype\n      subfield\n      embeddedDocType\n      path\n      dbField\n      description\n      info\n    }\n    frameFields {\n      ftype\n      subfield\n      embeddedDocType\n      path\n      dbField\n    }\n    maskTargets {\n      name\n      targets {\n        target\n        value\n      }\n    }\n    defaultMaskTargets {\n      target\n      value\n    }\n    evaluations {\n      key\n      version\n      timestamp\n      viewStages\n      config {\n        cls\n        predField\n        gtField\n      }\n    }\n    brainMethods {\n      key\n      version\n      timestamp\n      viewStages\n      config {\n        cls\n        embeddingsField\n        method\n        patchesField\n      }\n    }\n    lastLoadedAt\n    createdAt\n    skeletons {\n      name\n      labels\n      edges\n    }\n    defaultSkeleton {\n      labels\n      edges\n    }\n    version\n    viewCls\n    info\n  }\n}\n"
+    "text": "query DatasetQuery(\n  $name: String!\n  $view: BSONArray = null\n) {\n  dataset(name: $name, view: $view) {\n    id\n    name\n    mediaType\n    defaultGroupSlice\n    groupField\n    groupMediaTypes {\n      name\n      mediaType\n    }\n    appConfig {\n      gridMediaField\n      mediaFields\n      plugins\n      sidebarGroups {\n        expanded\n        paths\n        name\n      }\n      gridThumbnailFields\n      sidebarMode\n    }\n    sampleFields {\n      ftype\n      subfield\n      embeddedDocType\n      path\n      dbField\n      description\n      info\n    }\n    frameFields {\n      ftype\n      subfield\n      embeddedDocType\n      path\n      dbField\n    }\n    maskTargets {\n      name\n      targets {\n        target\n        value\n      }\n    }\n    defaultMaskTargets {\n      target\n      value\n    }\n    evaluations {\n      key\n      version\n      timestamp\n      viewStages\n      config {\n        cls\n        predField\n        gtField\n      }\n    }\n    brainMethods {\n      key\n      version\n      timestamp\n      viewStages\n      config {\n        cls\n        embeddingsField\n        method\n        patchesField\n      }\n    }\n    lastLoadedAt\n    createdAt\n    skeletons {\n      name\n      labels\n      edges\n    }\n    defaultSkeleton {\n      labels\n      edges\n    }\n    version\n    viewCls\n    info\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "cb693b696a0015821db22d1c36900251";
+(node as any).hash = "cf9241bdb7344bc90d22665114d8d4ba";
 
 export default node;
