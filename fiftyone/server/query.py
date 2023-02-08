@@ -240,6 +240,7 @@ class DatasetAppConfig:
     grid_media_field: t.Optional[str] = "filepath"
     spaces: t.Optional[JSON]
     color_scheme: t.Optional[ColorScheme]
+    grid_thumbnail_fields: t.Optional[JSON]
 
 
 @gql.type
