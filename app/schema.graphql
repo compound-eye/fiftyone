@@ -355,8 +355,8 @@ type Query {
   context: String!
   dev: Boolean!
   doNotTrack: Boolean!
-  samples(dataset: String!, view: BSONArray!, first: Int = 20, after: String = null, filter: SampleFilter = null, filters: BSON = null, extendedStages: BSON = null, paginationData: Boolean = true): SampleItemStrConnection!
-  sample(dataset: String!, view: BSONArray!, filter: SampleFilter!, filters: JSON = null): SampleItem
+  samples(dataset: String!, view: BSONArray!, first: Int = 20, after: String = null, filter: SampleFilter = null, filters: BSON = null, extendedStages: BSON = null, paginationData: Boolean = true, thumbnailsOnly: Boolean = false): SampleItemStrConnection!
+  sample(dataset: String!, view: BSONArray!, filter: SampleFilter!, filters: JSON = null, thumbnailsOnly: Boolean = false): SampleItem
   teamsSubmission: Boolean!
   uid: String!
   version: String!

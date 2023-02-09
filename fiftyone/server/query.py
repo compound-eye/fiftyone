@@ -421,6 +421,7 @@ class Query(fosa.AggregateQuery):
         filters: t.Optional[BSON] = None,
         extended_stages: t.Optional[BSON] = None,
         pagination_data: t.Optional[bool] = True,
+        thumbnails_only: t.Optional[bool] = False,
     ) -> Connection[SampleItem, str]:
         return await paginate_samples(
             dataset,
@@ -431,6 +432,7 @@ class Query(fosa.AggregateQuery):
             sample_filter=filter,
             extended_stages=extended_stages,
             pagination_data=pagination_data,
+            thumbnails_only=thumbnails_only,
         )
 
     @gql.field
@@ -440,6 +442,7 @@ class Query(fosa.AggregateQuery):
         view: BSONArray,
         filter: SampleFilter,
         filters: t.Optional[JSON] = None,
+        thumbnails_only: t.Optional[bool] = False,
     ) -> t.Optional[SampleItem]:
         samples = await paginate_samples(
             dataset,
@@ -448,6 +451,7 @@ class Query(fosa.AggregateQuery):
             1,
             sample_filter=filter,
             pagination_data=False,
+            thumbnails_only=thumbnails_only,
         )
         if samples.edges:
             return samples.edges[0].node
