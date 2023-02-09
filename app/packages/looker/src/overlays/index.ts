@@ -74,7 +74,8 @@ export const loadOverlays = <State extends BaseState>(
     }
   }
 
-  // Include any grid thumbnails
+  // When in the grid view (`state.config.thumbnail=true`), create
+  // ThumbnailOverlays for any fields with thumbnails.
   if (state?.config.thumbnail) {
     const gridThumbnailFields =
       state?.config?.appConfig?.gridThumbnailFields ?? {};

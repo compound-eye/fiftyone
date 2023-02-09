@@ -13,6 +13,11 @@ import { t } from "./util";
 
 interface ThumbnailInfo extends BaseLabel {}
 
+/**
+ * Overlay for rendering thumbnail images by drawing directly to the canvas.
+ *
+ * This overlay is intended for the grid view only and is not interactable.
+ */
 export default class ThumbnailOverlay<State extends BaseState>
   implements Overlay<State>
 {
@@ -26,6 +31,7 @@ export default class ThumbnailOverlay<State extends BaseState>
     this.thumbnailField = thumbnailField;
     this.thumbnailPath = thumbnailPath;
 
+    // Preload the image via the `/media` route
     this.image = document.createElement("img");
     this.image.crossOrigin = "anonymous";
     this.image.src = `${getFetchOrigin()}${getFetchPathPrefix()}/media?filepath=${encodeURIComponent(
@@ -33,11 +39,10 @@ export default class ThumbnailOverlay<State extends BaseState>
     )}`;
   }
 
-  containsPoint(_state: Readonly<State>): CONTAINS {
-    return CONTAINS.NONE;
-  }
-
   draw(ctx: CanvasRenderingContext2D, state: Readonly<State>): void {
+    // Transform the image based on the state (derived from pan and zoom).
+    // This is not necessary for thumbnails, but it's short enough to leave in
+    // for consistency across overlays.
     const [tlx, tly] = t(state, 0, 0);
     const [brx, bry] = t(state, 1, 1);
     const tmp = ctx.globalAlpha;
@@ -47,7 +52,11 @@ export default class ThumbnailOverlay<State extends BaseState>
   }
 
   // There is no need to support the remaining methods, as the ThumbnailOverlay
-  // won't be used in a modal, and won't need to interact.
+  // won't be used in a modal, and won't need to handle any interactions.
+
+  containsPoint(_state: Readonly<State>): CONTAINS {
+    return CONTAINS.NONE;
+  }
 
   getMouseDistance(_state: Readonly<State>): number {
     return Infinity;

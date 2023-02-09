@@ -44,7 +44,7 @@ export const pageParameters = selectorFamily<PageParameters, boolean>({
         zoom: get(fos.isPatchesView) && get(fos.cropToContent(modal)),
         slice: get(groupSlice(false)),
         // TODO: change this to !modal when lazy loading samples on click is
-        // supported
+        // implemented
         thumbnails_only: false,
       };
     },
