@@ -25,6 +25,7 @@ class Samples(HTTPEndpoint):
         page_length = data.get("page_length", 20)
         slice = data.get("slice", None)
         extended = data.get("extended", None)
+        thumbnails_only = data.get("thumbnails_only", False)
 
         results = await paginate_samples(
             dataset,
@@ -34,6 +35,7 @@ class Samples(HTTPEndpoint):
             (page - 1) * page_length - 1,
             sample_filter=SampleFilter(group=GroupElementFilter(slice=slice)),
             extended_stages=extended,
+            thumbnails_only=thumbnails_only,
         )
 
         return {
