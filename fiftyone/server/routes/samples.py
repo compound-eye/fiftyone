@@ -27,6 +27,8 @@ class Samples(HTTPEndpoint):
         page_length = data.get("page_length", 20)
         slice = data.get("slice", None)
         extended = data.get("extended", None)
+        thumbnails_only = data.get("thumbnails_only", False)
+
         results = await paginate_samples(
             dataset,
             stages,
@@ -38,6 +40,7 @@ class Samples(HTTPEndpoint):
             ),
             extended_stages=extended,
             pagination_data=True,
+            thumbnails_only=thumbnails_only,
         )
 
         return JSONResponse(

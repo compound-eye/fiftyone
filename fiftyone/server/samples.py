@@ -72,6 +72,7 @@ async def paginate_samples(
     extended_stages: t.Optional[BSON] = None,
     sample_filter: t.Optional[SampleFilter] = None,
     pagination_data: t.Optional[bool] = False,
+    thumbnails_only: bool = False,
 ) -> Connection[t.Union[ImageSample, VideoSample], str]:
     run = lambda reload: fosv.get_view(
         dataset,
@@ -147,7 +148,9 @@ async def paginate_samples(
     url_cache = {}
     nodes = await asyncio.gather(
         *[
-            _create_sample_item(view, sample, metadata_cache, url_cache)
+            _create_sample_item(
+                view, sample, metadata_cache, url_cache, thumbnails_only
+            )
             for sample in samples
         ]
     )
@@ -177,6 +180,7 @@ async def _create_sample_item(
     sample: t.Dict,
     metadata_cache: t.Dict[str, t.Dict],
     url_cache: t.Dict[str, str],
+    thumbnails_only: bool,
 ) -> SampleItem:
     media_type = fom.get_media_type(sample["filepath"])
 
@@ -192,5 +196,11 @@ async def _create_sample_item(
     metadata = await fosm.get_metadata(
         dataset, sample, media_type, metadata_cache, url_cache
     )
+
+    # When thumbnails_only is True, any field with a corresponding thumbnail
+    # field will be stripped from the output
+    if thumbnails_only:
+        for field, _ in dataset.app_config.grid_thumbnail_fields.items():
+            sample.pop(field, None)
 
     return from_dict(cls, {"id": sample["_id"], "sample": sample, **metadata})
