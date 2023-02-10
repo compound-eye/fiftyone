@@ -6,6 +6,9 @@ import { getFetchFunction } from "@fiftyone/utilities";
 
 import { pageParameters } from "./recoil";
 
+/**
+ * Pyton object returned from the `/samples` API.
+ */
 interface SamplesResponse {
   results: Array<{
     sample: fos.AppSample & { frame_number?: number };
@@ -77,6 +80,7 @@ export default <T extends fos.Lookers>(store: fos.LookerStore<T>) => {
       ): Promise<void> => {
         const clickedIndex = itemIndexMap[sampleId];
 
+        // getIndex is called when clicking the left/right arrows in the modal
         const getIndex = (index: number) => {
           const id = store.indices.get(index);
 
