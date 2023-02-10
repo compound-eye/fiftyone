@@ -51,8 +51,6 @@ export const pageParameters = selector({
           : null,
       },
       extendedStages: get(fos.extendedStages),
-      // TODO: change this to !modal when lazy loading samples on click is
-      // implemented
       thumbnails_only: false,
     };
     return (page: number, pageSize: number) => {
