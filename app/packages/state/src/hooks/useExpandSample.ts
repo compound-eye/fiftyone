@@ -1,4 +1,6 @@
 import { FlashlightConfig } from "@fiftyone/flashlight";
+import * as fos from "@fiftyone/state";
+import { getFetchFunction } from "@fiftyone/utilities";
 import { get } from "lodash";
 import { useRelayEnvironment } from "react-relay";
 import { RecoilState, useRecoilCallback } from "recoil";
@@ -13,6 +15,66 @@ import { getSanitizedGroupByExpression } from "../recoil/utils";
 import * as viewAtoms from "../recoil/view";
 import { LookerStore, Lookers } from "./useLookerStore";
 import useSetExpandedSample from "./useSetExpandedSample";
+
+/**
+ * Pyton object returned from the `/samples` API.
+ */
+interface SamplesResponse {
+  results: Array<{
+    sample: fos.ModalSample & { frame_number?: number };
+    aspect_ratio: number;
+    frame_rate?: number;
+    urls: Array<{ field: string; url: string }>;
+    thumbnails_only: boolean;
+  }>;
+}
+
+/**
+ * Returns a full sample by id, querying from the backend if necessary.
+ *
+ * Throws if the provided sampleId does not exist in the store.
+ */
+async function getFullSample<T extends fos.Lookers>(
+  store: fos.LookerStore<T>,
+  snapshot: Snapshot,
+  sampleId: string
+): Promise<fos.ModalSampleData | null> {
+  const existingSample = store.samples.get(sampleId);
+
+  if (!existingSample) {
+    return null;
+  }
+
+  if (!existingSample.thumbnailsOnly) {
+    return existingSample;
+  } else {
+    // Query for the full sample from the backend
+    const { zoom, ...params } = await snapshot.getPromise(
+      pageParameters(/* modal= */ true)
+    );
+
+    const { results } = (await getFetchFunction()("POST", "/samples", {
+      ...params,
+      sample_id: sampleId,
+    })) as SamplesResponse;
+    const result = results[0];
+
+    const newSample: fos.ModalSampleData = {
+      sample: result.sample,
+      aspectRatio: result.aspect_ratio,
+      frameRate: result.frame_rate,
+      frameNumber: result.sample.frame_number,
+      urls: Object.fromEntries(
+        result.urls.map(({ field, url }) => [field, url])
+      ),
+      thumbnailsOnly: false,
+    };
+
+    // Save the new sample in the global store
+    store.samples.set(result.sample.id, newSample);
+    return newSample;
+  }
+}
 
 export default <T extends Lookers>(store: LookerStore<T>) => {
   const environment = useRelayEnvironment();
@@ -92,7 +154,10 @@ export default <T extends Lookers>(store: LookerStore<T>) => {
             throw new Error("unable to paginate to next sample");
           }
 
-          const sample = store.samples.get(id);
+          const sample = await getFullSample(store, snapshot, id);
+          if (!sample) {
+            throw new Error(`sample does not exist (id=${id})`);
+          }
 
           let groupId: string;
           if (hasGroupSlices) {
