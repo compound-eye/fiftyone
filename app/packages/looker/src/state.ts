@@ -4,6 +4,7 @@
 
 import { Overlay } from "./overlays/base";
 
+import { State } from "@fiftyone/state";
 import { AppError, Schema, Stage } from "@fiftyone/utilities";
 
 // vite won't import these from fou
@@ -176,6 +177,7 @@ export interface BaseConfig {
     id: string;
     name: string;
   };
+  appConfig: State.DatasetAppConfig;
 }
 
 export interface FrameConfig extends BaseConfig {

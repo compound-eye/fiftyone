@@ -15,9 +15,8 @@ import { useCallback, useRef } from "react";
 import { useErrorHandler } from "react-error-boundary";
 import { useRecoilValue } from "recoil";
 import { ModalSample, selectedMediaField } from "../recoil";
-import { selectedSamples } from "../recoil/atoms";
+import { dataset as datasetAtom, selectedSamples } from "../recoil/atoms";
 import * as schemaAtoms from "../recoil/schema";
-import { datasetName } from "../recoil/selectors";
 import { State } from "../recoil/types";
 import { getSampleSrc } from "../recoil/utils";
 import * as viewAtoms from "../recoil/view";
@@ -35,7 +34,7 @@ export default <T extends AbstractLooker>(
   const handleError = useErrorHandler();
 
   const view = useRecoilValue(viewAtoms.view);
-  const dataset = useRecoilValue(datasetName);
+  const dataset = useRecoilValue(datasetAtom);
   const mediaField = useRecoilValue(selectedMediaField(isModal));
 
   const fieldSchema = useRecoilValue(
@@ -107,6 +106,7 @@ export default <T extends AbstractLooker>(
       }
 
       const config: ConstructorParameters<T>[1] = {
+        appConfig: dataset.appConfig,
         fieldSchema: {
           ...fieldSchema,
           frames: {
@@ -125,7 +125,7 @@ export default <T extends AbstractLooker>(
         src: getSampleSrc(sampleMediaFilePath),
         support: isClip ? sample["support"] : undefined,
         thumbnail,
-        dataset,
+        dataset: dataset.name,
         view,
       };
 

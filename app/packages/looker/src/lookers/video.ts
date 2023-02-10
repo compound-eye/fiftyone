@@ -125,7 +125,7 @@ const { acquireReader, addFrame } = (() => {
           Object.entries(frameSample).map(([k, v]) => ["frames." + k, v])
         );
 
-        const overlays = loadOverlays(prefixedFrameSample);
+        const overlays = loadOverlays(null, prefixedFrameSample);
         overlays.forEach((overlay) => {
           streamSize += overlay.getSizeBytes();
         });
@@ -338,6 +338,7 @@ export class VideoLooker extends AbstractLooker<VideoState, VideoSample> {
 
   loadOverlays(sample: VideoSample) {
     this.sampleOverlays = loadOverlays(
+      null,
       Object.fromEntries(
         Object.entries(sample).filter(([fieldName]) => fieldName !== "frames")
       ),
@@ -349,6 +350,7 @@ export class VideoLooker extends AbstractLooker<VideoState, VideoSample> {
       : [{ frame_number: 1 }];
     const providedFrameOverlays = providedFrames.map((frameSample) =>
       loadOverlays(
+        null,
         Object.fromEntries(
           Object.entries(frameSample).map(([k, v]) => ["frames." + k, v])
         )

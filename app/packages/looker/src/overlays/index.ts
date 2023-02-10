@@ -20,6 +20,7 @@ import HeatmapOverlay, { getHeatmapPoints } from "./heatmap";
 import KeypointOverlay, { getKeypointPoints } from "./keypoint";
 import PolylineOverlay, { getPolylinePoints } from "./polyline";
 import SegmentationOverlay, { getSegmentationPoints } from "./segmentation";
+import ThumbnailOverlay from "./thumbnail";
 
 const fromLabel = (overlayType) => (field, label) =>
   [new overlayType(field, label)];
@@ -52,12 +53,31 @@ export const POINTS_FROM_FO = {
 };
 
 export const loadOverlays = <State extends BaseState>(
+  state: State | null,
   sample: {
     [key: string]: any;
   },
   video = false
 ): Overlay<State>[] => {
   const { classifications, overlays } = accumulateOverlays(sample);
+
+  // When in the grid view (`state.config.thumbnail=true`), create
+  // ThumbnailOverlays for any fields with thumbnails.
+  if (state?.config.thumbnail) {
+    const gridThumbnailFields =
+      state?.config?.appConfig?.gridThumbnailFields ?? {};
+    for (const [fieldName, thumbnailFieldName] of Object.entries(
+      gridThumbnailFields
+    ) as ReadonlyArray<[string, string]>) {
+      overlays.push(
+        new ThumbnailOverlay(
+          fieldName,
+          thumbnailFieldName,
+          sample[thumbnailFieldName]
+        )
+      );
+    }
+  }
 
   if (classifications.length > 0) {
     const overlay = video
