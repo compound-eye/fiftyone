@@ -53,6 +53,7 @@ export default class ThumbnailOverlay<State extends BaseState>
 
   // There is no need to support the remaining methods, as the ThumbnailOverlay
   // won't be used in a modal, and won't need to handle any interactions.
+  // However, they'll still be called, and should return empty values.
 
   containsPoint(_state: Readonly<State>): CONTAINS {
     return CONTAINS.NONE;

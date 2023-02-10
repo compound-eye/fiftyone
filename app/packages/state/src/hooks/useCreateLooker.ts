@@ -15,7 +15,6 @@ import {
   SampleData,
 } from "../recoil/atoms";
 import * as schemaAtoms from "../recoil/schema";
-import { datasetName as datasetNameAtom } from "../recoil/selectors";
 import { State } from "../recoil/types";
 import { getSampleSrc } from "../recoil/utils";
 import * as viewAtoms from "../recoil/view";
@@ -35,7 +34,6 @@ export default <T extends FrameLooker | ImageLooker | VideoLooker>(
 
   const view = useRecoilValue(viewAtoms.view);
   const dataset = useRecoilValue(datasetAtom);
-  const datasetName = useRecoilValue(datasetNameAtom);
   const mediaField = useRecoilValue(selectedMediaField(isModal));
 
   const fieldSchema = useRecoilValue(
@@ -79,7 +77,7 @@ export default <T extends FrameLooker | ImageLooker | VideoLooker>(
         src: getSampleSrc(urls[mediaField]),
         support: isClip ? sample.support : undefined,
         thumbnail,
-        dataset: datasetName,
+        dataset: dataset.name,
         view,
       };
 
