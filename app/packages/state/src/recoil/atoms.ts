@@ -17,6 +17,7 @@ export interface SampleData {
   urls: {
     [field: string]: string;
   };
+  thumbnailsOnly: boolean;
 }
 
 export interface ModalNavigation {

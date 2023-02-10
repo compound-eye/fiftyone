@@ -41,6 +41,8 @@ const usePage = (
                 urls: Object.fromEntries(
                   result.urls.map(({ field, url }) => [field, url])
                 ),
+                // Mark whether or not this sample only has thumbnails
+                thumbnailsOnly: params.thumbnails_only,
               };
 
               store.samples.set(result.sample._id, data);
