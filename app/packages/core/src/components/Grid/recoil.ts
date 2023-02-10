@@ -28,6 +28,7 @@ export interface PageParameters {
   dataset: string;
   view: fos.State.Stage[];
   zoom: boolean;
+  thumbnails_only: boolean;
 }
 
 export const pageParameters = selectorFamily<PageParameters, boolean>({
@@ -42,6 +43,9 @@ export const pageParameters = selectorFamily<PageParameters, boolean>({
         extended: get(fos.extendedStages),
         zoom: get(fos.isPatchesView) && get(fos.cropToContent(modal)),
         slice: get(groupSlice(false)),
+        // TODO: change this to !modal when lazy loading samples on click is
+        // implemented
+        thumbnails_only: false,
       };
     },
 });

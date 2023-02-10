@@ -145,7 +145,7 @@ export abstract class AbstractLooker<
   }
 
   loadOverlays(sample: Sample): void {
-    this.sampleOverlays = loadOverlays(sample);
+    this.sampleOverlays = loadOverlays(this.state, sample);
   }
 
   pluckOverlays(state: Readonly<State>): Overlay<State>[] {
