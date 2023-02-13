@@ -186,7 +186,13 @@ export const createColorGenerator = (() => {
         return map[val];
       }
 
-      map[val] = colorPool[i % colorPool.length];
+      if (Number.isInteger(val)) {
+        // If the value is an integer, index directly into the colormap
+        map[val] = colorPool[val % colorPool.length];
+      } else {
+        // Otherwise use the counter and iterate through the colors
+        map[val] = colorPool[i % colorPool.length];
+      }
       i++;
       return map[val];
     };
