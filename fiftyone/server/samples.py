@@ -35,6 +35,7 @@ class Sample:
     sample: JSON
     urls: t.List[MediaURL]
     aspect_ratio: float
+    thumbnails_only: bool
 
 
 @gql.type

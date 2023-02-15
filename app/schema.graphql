@@ -260,6 +260,7 @@ type ImageSample implements Sample {
   sample: JSON!
   urls: [MediaURL!]!
   aspectRatio: Float!
+  thumbnailsOnly: Boolean!
 }
 
 type IntAggregation implements Aggregation {
@@ -343,6 +344,7 @@ type PointCloudSample implements Sample {
   sample: JSON!
   urls: [MediaURL!]!
   aspectRatio: Float!
+  thumbnailsOnly: Boolean!
 }
 
 type Query {
@@ -390,6 +392,7 @@ interface Sample {
   sample: JSON!
   urls: [MediaURL!]!
   aspectRatio: Float!
+  thumbnailsOnly: Boolean!
 }
 
 type SampleField {
@@ -524,6 +527,7 @@ type VideoSample implements Sample {
   sample: JSON!
   urls: [MediaURL!]!
   aspectRatio: Float!
+  thumbnailsOnly: Boolean!
   frameNumber: Int!
   frameRate: Float!
 }

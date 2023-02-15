@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1d598f6b9d52c6b564b614fbbf17fb0e>>
+ * @generated SignedSource<<508d8ad19323912347163e75b020dc38>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -30,6 +30,7 @@ export type mainSampleQuery$data = {
     readonly aspectRatio: number;
     readonly id: string;
     readonly sample: object;
+    readonly thumbnailsOnly: boolean;
     readonly urls: ReadonlyArray<{
       readonly field: string;
       readonly url: string | null;
@@ -39,6 +40,7 @@ export type mainSampleQuery$data = {
     readonly aspectRatio: number;
     readonly id: string;
     readonly sample: object;
+    readonly thumbnailsOnly: boolean;
     readonly urls: ReadonlyArray<{
       readonly field: string;
       readonly url: string | null;
@@ -50,6 +52,7 @@ export type mainSampleQuery$data = {
     readonly frameRate: number;
     readonly id: string;
     readonly sample: object;
+    readonly thumbnailsOnly: boolean;
     readonly urls: ReadonlyArray<{
       readonly field: string;
       readonly url: string | null;
@@ -132,13 +135,21 @@ v7 = {
   ],
   "storageKey": null
 },
-v8 = [
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "thumbnailsOnly",
+  "storageKey": null
+},
+v9 = [
   (v4/*: any*/),
   (v5/*: any*/),
   (v6/*: any*/),
-  (v7/*: any*/)
+  (v7/*: any*/),
+  (v8/*: any*/)
 ],
-v9 = [
+v10 = [
   {
     "alias": null,
     "args": [
@@ -177,13 +188,13 @@ v9 = [
       },
       {
         "kind": "InlineFragment",
-        "selections": (v8/*: any*/),
+        "selections": (v9/*: any*/),
         "type": "ImageSample",
         "abstractKey": null
       },
       {
         "kind": "InlineFragment",
-        "selections": (v8/*: any*/),
+        "selections": (v9/*: any*/),
         "type": "PointCloudSample",
         "abstractKey": null
       },
@@ -207,7 +218,8 @@ v9 = [
             "storageKey": null
           },
           (v6/*: any*/),
-          (v7/*: any*/)
+          (v7/*: any*/),
+          (v8/*: any*/)
         ],
         "type": "VideoSample",
         "abstractKey": null
@@ -227,7 +239,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "mainSampleQuery",
-    "selections": (v9/*: any*/),
+    "selections": (v10/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -241,19 +253,19 @@ return {
     ],
     "kind": "Operation",
     "name": "mainSampleQuery",
-    "selections": (v9/*: any*/)
+    "selections": (v10/*: any*/)
   },
   "params": {
-    "cacheID": "715e2d25e95718dc1fa91a62c2ab54a3",
+    "cacheID": "c839668614c06a3a6b7b29b8dc62ec26",
     "id": null,
     "metadata": {},
     "name": "mainSampleQuery",
     "operationKind": "query",
-    "text": "query mainSampleQuery(\n  $dataset: String!\n  $view: BSONArray!\n  $filter: SampleFilter!\n  $filters: JSON\n) {\n  sample(dataset: $dataset, view: $view, filters: $filters, filter: $filter) {\n    __typename\n    ... on ImageSample {\n      aspectRatio\n      id\n      sample\n      urls {\n        field\n        url\n      }\n    }\n    ... on PointCloudSample {\n      aspectRatio\n      id\n      sample\n      urls {\n        field\n        url\n      }\n    }\n    ... on VideoSample {\n      aspectRatio\n      id\n      frameRate\n      frameNumber\n      sample\n      urls {\n        field\n        url\n      }\n    }\n  }\n}\n"
+    "text": "query mainSampleQuery(\n  $dataset: String!\n  $view: BSONArray!\n  $filter: SampleFilter!\n  $filters: JSON\n) {\n  sample(dataset: $dataset, view: $view, filters: $filters, filter: $filter) {\n    __typename\n    ... on ImageSample {\n      aspectRatio\n      id\n      sample\n      urls {\n        field\n        url\n      }\n      thumbnailsOnly\n    }\n    ... on PointCloudSample {\n      aspectRatio\n      id\n      sample\n      urls {\n        field\n        url\n      }\n      thumbnailsOnly\n    }\n    ... on VideoSample {\n      aspectRatio\n      id\n      frameRate\n      frameNumber\n      sample\n      urls {\n        field\n        url\n      }\n      thumbnailsOnly\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2b2a2cfd1b68e8fd6d01258f45d2f99a";
+(node as any).hash = "0b4ac0baac192435d48e5152a021020c";
 
 export default node;

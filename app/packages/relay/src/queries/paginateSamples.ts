@@ -37,6 +37,7 @@ export default r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
           ... on PointCloudSample {
             aspectRatio
@@ -46,6 +47,7 @@ export default r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
           ... on VideoSample {
             id
@@ -57,6 +59,7 @@ export default r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
         }
       }
