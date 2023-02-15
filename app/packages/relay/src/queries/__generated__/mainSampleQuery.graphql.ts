@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e7dcc9a975676ac12e6b0412117ee7bb>>
+ * @generated SignedSource<<221e85c3ada6a5f79cfc7a2d0a27b452>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,6 +28,7 @@ export type mainSampleQuery$data = {
     readonly __typename: "ImageSample";
     readonly id: string;
     readonly sample: object;
+    readonly thumbnailsOnly: boolean;
     readonly urls: ReadonlyArray<{
       readonly field: string;
       readonly url: string | null;
@@ -36,6 +37,7 @@ export type mainSampleQuery$data = {
     readonly __typename: "PointCloudSample";
     readonly id: string;
     readonly sample: object;
+    readonly thumbnailsOnly: boolean;
     readonly urls: ReadonlyArray<{
       readonly field: string;
       readonly url: string | null;
@@ -45,6 +47,7 @@ export type mainSampleQuery$data = {
     readonly frameRate: number;
     readonly id: string;
     readonly sample: object;
+    readonly thumbnailsOnly: boolean;
     readonly urls: ReadonlyArray<{
       readonly field: string;
       readonly url: string | null;
@@ -120,12 +123,20 @@ v6 = {
   ],
   "storageKey": null
 },
-v7 = [
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "thumbnailsOnly",
+  "storageKey": null
+},
+v8 = [
   (v4/*: any*/),
   (v5/*: any*/),
-  (v6/*: any*/)
+  (v6/*: any*/),
+  (v7/*: any*/)
 ],
-v8 = [
+v9 = [
   {
     "alias": null,
     "args": [
@@ -164,13 +175,13 @@ v8 = [
       },
       {
         "kind": "InlineFragment",
-        "selections": (v7/*: any*/),
+        "selections": (v8/*: any*/),
         "type": "ImageSample",
         "abstractKey": null
       },
       {
         "kind": "InlineFragment",
-        "selections": (v7/*: any*/),
+        "selections": (v8/*: any*/),
         "type": "PointCloudSample",
         "abstractKey": null
       },
@@ -186,7 +197,8 @@ v8 = [
             "name": "frameRate",
             "storageKey": null
           },
-          (v6/*: any*/)
+          (v6/*: any*/),
+          (v7/*: any*/)
         ],
         "type": "VideoSample",
         "abstractKey": null
@@ -206,7 +218,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "mainSampleQuery",
-    "selections": (v8/*: any*/),
+    "selections": (v9/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -220,19 +232,19 @@ return {
     ],
     "kind": "Operation",
     "name": "mainSampleQuery",
-    "selections": (v8/*: any*/)
+    "selections": (v9/*: any*/)
   },
   "params": {
-    "cacheID": "7b556450018a1319627c13464e9c9004",
+    "cacheID": "e506d24911d52a56cd5a96ad6b1551a8",
     "id": null,
     "metadata": {},
     "name": "mainSampleQuery",
     "operationKind": "query",
-    "text": "query mainSampleQuery(\n  $dataset: String!\n  $view: BSONArray!\n  $filter: SampleFilter!\n  $filters: JSON\n) {\n  sample(dataset: $dataset, view: $view, filters: $filters, filter: $filter) {\n    __typename\n    ... on ImageSample {\n      id\n      sample\n      urls {\n        field\n        url\n      }\n    }\n    ... on PointCloudSample {\n      id\n      sample\n      urls {\n        field\n        url\n      }\n    }\n    ... on VideoSample {\n      id\n      sample\n      frameRate\n      urls {\n        field\n        url\n      }\n    }\n  }\n}\n"
+    "text": "query mainSampleQuery(\n  $dataset: String!\n  $view: BSONArray!\n  $filter: SampleFilter!\n  $filters: JSON\n) {\n  sample(dataset: $dataset, view: $view, filters: $filters, filter: $filter) {\n    __typename\n    ... on ImageSample {\n      id\n      sample\n      urls {\n        field\n        url\n      }\n      thumbnailsOnly\n    }\n    ... on PointCloudSample {\n      id\n      sample\n      urls {\n        field\n        url\n      }\n      thumbnailsOnly\n    }\n    ... on VideoSample {\n      id\n      sample\n      frameRate\n      urls {\n        field\n        url\n      }\n      thumbnailsOnly\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7e315765e417f0b358368b714be57762";
+(node as any).hash = "67a790e495b8350428380c3fa5daacb4";
 
 export default node;

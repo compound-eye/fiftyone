@@ -30,6 +30,7 @@ export default r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
           ... on PointCloudSample {
             id
@@ -38,6 +39,7 @@ export default r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
           ... on VideoSample {
             id
@@ -48,6 +50,7 @@ export default r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
         }
       }

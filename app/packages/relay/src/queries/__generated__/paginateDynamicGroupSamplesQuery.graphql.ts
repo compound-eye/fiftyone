@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<74b2325fb34d783930cf6e182f29e0e8>>
+ * @generated SignedSource<<7b94ae3e3917d378fee862cfeb758bf5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,6 +33,7 @@ export type paginateDynamicGroupSamplesQuery$data = {
         readonly aspectRatio: number;
         readonly id: string;
         readonly sample: object;
+        readonly thumbnailsOnly: boolean;
         readonly urls: ReadonlyArray<{
           readonly field: string;
           readonly url: string | null;
@@ -41,6 +42,7 @@ export type paginateDynamicGroupSamplesQuery$data = {
         readonly __typename: "PointCloudSample";
         readonly id: string;
         readonly sample: object;
+        readonly thumbnailsOnly: boolean;
         readonly urls: ReadonlyArray<{
           readonly field: string;
           readonly url: string | null;
@@ -51,6 +53,7 @@ export type paginateDynamicGroupSamplesQuery$data = {
         readonly frameRate: number;
         readonly id: string;
         readonly sample: object;
+        readonly thumbnailsOnly: boolean;
         readonly urls: ReadonlyArray<{
           readonly field: string;
           readonly url: string | null;
@@ -145,7 +148,14 @@ v8 = {
   ],
   "storageKey": null
 },
-v9 = [
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "thumbnailsOnly",
+  "storageKey": null
+},
+v10 = [
   {
     "alias": null,
     "args": [
@@ -223,7 +233,8 @@ v9 = [
                   (v5/*: any*/),
                   (v6/*: any*/),
                   (v7/*: any*/),
-                  (v8/*: any*/)
+                  (v8/*: any*/),
+                  (v9/*: any*/)
                 ],
                 "type": "ImageSample",
                 "abstractKey": null
@@ -233,7 +244,8 @@ v9 = [
                 "selections": [
                   (v5/*: any*/),
                   (v7/*: any*/),
-                  (v8/*: any*/)
+                  (v8/*: any*/),
+                  (v9/*: any*/)
                 ],
                 "type": "PointCloudSample",
                 "abstractKey": null
@@ -251,7 +263,8 @@ v9 = [
                     "storageKey": null
                   },
                   (v7/*: any*/),
-                  (v8/*: any*/)
+                  (v8/*: any*/),
+                  (v9/*: any*/)
                 ],
                 "type": "VideoSample",
                 "abstractKey": null
@@ -303,7 +316,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "paginateDynamicGroupSamplesQuery",
-    "selections": (v9/*: any*/),
+    "selections": (v10/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -318,19 +331,19 @@ return {
     ],
     "kind": "Operation",
     "name": "paginateDynamicGroupSamplesQuery",
-    "selections": (v9/*: any*/)
+    "selections": (v10/*: any*/)
   },
   "params": {
-    "cacheID": "ba78f97e8af0df72d69b2427819b8136",
+    "cacheID": "075308d9ab41e0709e67092a85745ca0",
     "id": null,
     "metadata": {},
     "name": "paginateDynamicGroupSamplesQuery",
     "operationKind": "query",
-    "text": "query paginateDynamicGroupSamplesQuery(\n  $count: Int = 20\n  $cursor: String = null\n  $dataset: String!\n  $view: BSONArray!\n  $filter: SampleFilter!\n) {\n  samples(dataset: $dataset, view: $view, first: $count, after: $cursor, filter: $filter) {\n    total\n    edges {\n      cursor\n      node {\n        __typename\n        ... on ImageSample {\n          id\n          aspectRatio\n          sample\n          urls {\n            field\n            url\n          }\n        }\n        ... on PointCloudSample {\n          id\n          sample\n          urls {\n            field\n            url\n          }\n        }\n        ... on VideoSample {\n          id\n          aspectRatio\n          frameRate\n          sample\n          urls {\n            field\n            url\n          }\n        }\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query paginateDynamicGroupSamplesQuery(\n  $count: Int = 20\n  $cursor: String = null\n  $dataset: String!\n  $view: BSONArray!\n  $filter: SampleFilter!\n) {\n  samples(dataset: $dataset, view: $view, first: $count, after: $cursor, filter: $filter) {\n    total\n    edges {\n      cursor\n      node {\n        __typename\n        ... on ImageSample {\n          id\n          aspectRatio\n          sample\n          urls {\n            field\n            url\n          }\n          thumbnailsOnly\n        }\n        ... on PointCloudSample {\n          id\n          sample\n          urls {\n            field\n            url\n          }\n          thumbnailsOnly\n        }\n        ... on VideoSample {\n          id\n          aspectRatio\n          frameRate\n          sample\n          urls {\n            field\n            url\n          }\n          thumbnailsOnly\n        }\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "eec9a419e225afd9718dca8b07353451";
+(node as any).hash = "8e756016d0616c99d01e3d4dc14bed1e";
 
 export default node;

@@ -37,6 +37,7 @@ export const paginateGroupPaginationFragment = r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
           ... on PointCloudSample {
             id
@@ -45,6 +46,7 @@ export const paginateGroupPaginationFragment = r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
           ... on VideoSample {
             id
@@ -55,6 +57,7 @@ export const paginateGroupPaginationFragment = r(graphql`
               field
               url
             }
+            thumbnailsOnly
           }
         }
       }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<de447b5fc11c0999c31cc968c0841b92>>
+ * @generated SignedSource<<2889849c6e0dba4be86ef04cf96fdc41>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type paginateGroup_query$data = {
         readonly aspectRatio: number;
         readonly id: string;
         readonly sample: object;
+        readonly thumbnailsOnly: boolean;
         readonly urls: ReadonlyArray<{
           readonly field: string;
           readonly url: string | null;
@@ -27,6 +28,7 @@ export type paginateGroup_query$data = {
         readonly __typename: "PointCloudSample";
         readonly id: string;
         readonly sample: object;
+        readonly thumbnailsOnly: boolean;
         readonly urls: ReadonlyArray<{
           readonly field: string;
           readonly url: string | null;
@@ -37,6 +39,7 @@ export type paginateGroup_query$data = {
         readonly frameRate: number;
         readonly id: string;
         readonly sample: object;
+        readonly thumbnailsOnly: boolean;
         readonly urls: ReadonlyArray<{
           readonly field: string;
           readonly url: string | null;
@@ -106,6 +109,13 @@ v4 = {
       "storageKey": null
     }
   ],
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "thumbnailsOnly",
   "storageKey": null
 };
 return {
@@ -223,7 +233,8 @@ return {
                     (v1/*: any*/),
                     (v2/*: any*/),
                     (v3/*: any*/),
-                    (v4/*: any*/)
+                    (v4/*: any*/),
+                    (v5/*: any*/)
                   ],
                   "type": "ImageSample",
                   "abstractKey": null
@@ -233,7 +244,8 @@ return {
                   "selections": [
                     (v1/*: any*/),
                     (v3/*: any*/),
-                    (v4/*: any*/)
+                    (v4/*: any*/),
+                    (v5/*: any*/)
                   ],
                   "type": "PointCloudSample",
                   "abstractKey": null
@@ -251,7 +263,8 @@ return {
                       "storageKey": null
                     },
                     (v3/*: any*/),
-                    (v4/*: any*/)
+                    (v4/*: any*/),
+                    (v5/*: any*/)
                   ],
                   "type": "VideoSample",
                   "abstractKey": null
@@ -296,6 +309,6 @@ return {
 };
 })();
 
-(node as any).hash = "20891cc18082d493738d44781ff64148";
+(node as any).hash = "66fc434bfde477eb90e88bba84bbba6a";
 
 export default node;

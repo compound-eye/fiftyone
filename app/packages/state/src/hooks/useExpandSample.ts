@@ -1,9 +1,10 @@
 import { FlashlightConfig } from "@fiftyone/flashlight";
+import type { Sample } from "@fiftyone/looker";
 import * as fos from "@fiftyone/state";
 import { getFetchFunction } from "@fiftyone/utilities";
 import { get } from "lodash";
 import { useRelayEnvironment } from "react-relay";
-import { RecoilState, useRecoilCallback } from "recoil";
+import { RecoilState, selectorFamily, useRecoilCallback } from "recoil";
 import * as atoms from "../recoil/atoms";
 import * as filterAtoms from "../recoil/filters";
 import * as groupAtoms from "../recoil/groups";
@@ -15,13 +16,39 @@ import { getSanitizedGroupByExpression } from "../recoil/utils";
 import * as viewAtoms from "../recoil/view";
 import { LookerStore, Lookers } from "./useLookerStore";
 import useSetExpandedSample from "./useSetExpandedSample";
+import { groupSlice } from "../recoil/groups";
+
+interface PageParameters {
+  filters: fos.State.Filters;
+  dataset: string;
+  view: fos.State.Stage[];
+  zoom: boolean;
+  thumbnails_only: boolean;
+}
+
+const pageParameters2 = selectorFamily<PageParameters, boolean>({
+  key: "pageParameters2",
+  get:
+    (modal) =>
+    ({ get }) => {
+      return {
+        filters: get(modal ? fos.modalFilters : fos.filters),
+        view: get(fos.view),
+        dataset: get(fos.datasetName),
+        extended: get(fos.extendedStages),
+        zoom: get(fos.isPatchesView) && get(fos.cropToContent(modal)),
+        slice: get(groupSlice(false)),
+        thumbnails_only: !modal,
+      };
+    },
+});
 
 /**
  * Pyton object returned from the `/samples` API.
  */
 interface SamplesResponse {
   results: Array<{
-    sample: fos.ModalSample & { frame_number?: number };
+    sample: Sample & { frame_number?: number };
     aspect_ratio: number;
     frame_rate?: number;
     urls: Array<{ field: string; url: string }>;
@@ -36,9 +63,9 @@ interface SamplesResponse {
  */
 async function getFullSample<T extends fos.Lookers>(
   store: fos.LookerStore<T>,
-  snapshot: Snapshot,
+  pageParams: PageParameters,
   sampleId: string
-): Promise<fos.ModalSampleData | null> {
+): Promise<fos.ModalSample | null> {
   const existingSample = store.samples.get(sampleId);
 
   if (!existingSample) {
@@ -48,25 +75,16 @@ async function getFullSample<T extends fos.Lookers>(
   if (!existingSample.thumbnailsOnly) {
     return existingSample;
   } else {
-    // Query for the full sample from the backend
-    const { zoom, ...params } = await snapshot.getPromise(
-      pageParameters(/* modal= */ true)
-    );
-
     const { results } = (await getFetchFunction()("POST", "/samples", {
-      ...params,
+      ...pageParams,
       sample_id: sampleId,
     })) as SamplesResponse;
     const result = results[0];
 
-    const newSample: fos.ModalSampleData = {
+    const newSample: fos.ModalSample = {
+      ...existingSample,
       sample: result.sample,
-      aspectRatio: result.aspect_ratio,
-      frameRate: result.frame_rate,
-      frameNumber: result.sample.frame_number,
-      urls: Object.fromEntries(
-        result.urls.map(({ field, url }) => [field, url])
-      ),
+      urls: result.urls.map(({ field, url }) => ({field, url})),
       thumbnailsOnly: false,
     };
 
@@ -145,6 +163,24 @@ export default <T extends Lookers>(store: LookerStore<T>) => {
           viewAtoms.dynamicGroupParameters
         );
 
+        // Cache the page parameters so that we don't need `snapshot` (which
+        // is released once the useRecoilCallback ends) to async load samples.
+        const pageParams = await snapshot.getPromise(
+          pageParameters2(/* modal= */ true)
+        );
+
+        // Get the full sample if the existing sample has thumbnails only.
+        // Then set it in the modal if the user hasn't navigated away.
+        const getAndSetFullSampleIfNeeded = (
+          existingSample: fos.ModalSample
+        ) => {
+          if (existingSample.thumbnailsOnly) {
+            const sampleId = existingSample.sample.id;
+            // Asynchronously update the sample in the store
+            getFullSample(store, pageParams, sampleId);
+          }
+        };
+
         const getIndex = async (index: number) => {
           if (!store.indices.has(index)) await next();
 
@@ -154,10 +190,13 @@ export default <T extends Lookers>(store: LookerStore<T>) => {
             throw new Error("unable to paginate to next sample");
           }
 
-          const sample = await getFullSample(store, snapshot, id);
+          const sample = store.samples.get(id);
           if (!sample) {
             throw new Error(`sample does not exist (id=${id})`);
           }
+
+          // Query for the full sample if needed
+          getAndSetFullSampleIfNeeded(sample);
 
           let groupId: string;
           if (hasGroupSlices) {

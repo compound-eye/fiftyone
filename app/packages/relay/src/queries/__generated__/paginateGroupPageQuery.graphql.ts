@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b965eb1474c8e5503b242344204aa178>>
+ * @generated SignedSource<<d3ed2844b2c302d276a333f6d016c8a3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -133,6 +133,13 @@ v5 = {
     }
   ],
   "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "thumbnailsOnly",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -207,7 +214,8 @@ return {
                       (v2/*: any*/),
                       (v3/*: any*/),
                       (v4/*: any*/),
-                      (v5/*: any*/)
+                      (v5/*: any*/),
+                      (v6/*: any*/)
                     ],
                     "type": "ImageSample",
                     "abstractKey": null
@@ -217,7 +225,8 @@ return {
                     "selections": [
                       (v2/*: any*/),
                       (v4/*: any*/),
-                      (v5/*: any*/)
+                      (v5/*: any*/),
+                      (v6/*: any*/)
                     ],
                     "type": "PointCloudSample",
                     "abstractKey": null
@@ -235,7 +244,8 @@ return {
                         "storageKey": null
                       },
                       (v4/*: any*/),
-                      (v5/*: any*/)
+                      (v5/*: any*/),
+                      (v6/*: any*/)
                     ],
                     "type": "VideoSample",
                     "abstractKey": null
@@ -290,16 +300,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1e5b70e8bf7e81c7574e5701cfc30db6",
+    "cacheID": "5d99ea0611881e0225aa177d5c423024",
     "id": null,
     "metadata": {},
     "name": "paginateGroupPageQuery",
     "operationKind": "query",
-    "text": "query paginateGroupPageQuery(\n  $count: Int\n  $cursor: String\n  $dataset: String!\n  $filter: SampleFilter\n  $view: BSONArray!\n) {\n  ...paginateGroup_query\n}\n\nfragment paginateGroup_query on Query {\n  samples(dataset: $dataset, view: $view, first: $count, after: $cursor, filter: $filter) {\n    total\n    edges {\n      cursor\n      node {\n        __typename\n        ... on ImageSample {\n          id\n          aspectRatio\n          sample\n          urls {\n            field\n            url\n          }\n        }\n        ... on PointCloudSample {\n          id\n          sample\n          urls {\n            field\n            url\n          }\n        }\n        ... on VideoSample {\n          id\n          aspectRatio\n          frameRate\n          sample\n          urls {\n            field\n            url\n          }\n        }\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query paginateGroupPageQuery(\n  $count: Int\n  $cursor: String\n  $dataset: String!\n  $filter: SampleFilter\n  $view: BSONArray!\n) {\n  ...paginateGroup_query\n}\n\nfragment paginateGroup_query on Query {\n  samples(dataset: $dataset, view: $view, first: $count, after: $cursor, filter: $filter) {\n    total\n    edges {\n      cursor\n      node {\n        __typename\n        ... on ImageSample {\n          id\n          aspectRatio\n          sample\n          urls {\n            field\n            url\n          }\n          thumbnailsOnly\n        }\n        ... on PointCloudSample {\n          id\n          sample\n          urls {\n            field\n            url\n          }\n          thumbnailsOnly\n        }\n        ... on VideoSample {\n          id\n          aspectRatio\n          frameRate\n          sample\n          urls {\n            field\n            url\n          }\n          thumbnailsOnly\n        }\n      }\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "20891cc18082d493738d44781ff64148";
+(node as any).hash = "66fc434bfde477eb90e88bba84bbba6a";
 
 export default node;
