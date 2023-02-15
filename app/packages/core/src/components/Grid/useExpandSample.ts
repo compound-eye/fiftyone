@@ -1,10 +1,11 @@
+import { useRef } from "react";
 import { Snapshot, useRecoilCallback } from "recoil";
 
 import { ItemIndexMap } from "@fiftyone/flashlight/src/state";
 import * as fos from "@fiftyone/state";
 import { getFetchFunction } from "@fiftyone/utilities";
 
-import { pageParameters } from "./recoil";
+import { PageParameters, pageParameters } from "./recoil";
 
 /**
  * Pyton object returned from the `/samples` API.
@@ -26,50 +27,36 @@ interface SamplesResponse {
  */
 async function getFullSample<T extends fos.Lookers>(
   store: fos.LookerStore<T>,
-  snapshot: Snapshot,
+  pageParams: PageParameters,
   sampleId: string
-): Promise<fos.SampleData | null> {
-  const existingSample = store.samples.get(sampleId);
+): Promise<fos.SampleData> {
+  // Query for the full sample from the backend
+  const { results } = (await getFetchFunction()("POST", "/samples", {
+    ...pageParams,
+    sample_id: sampleId,
+  })) as SamplesResponse;
+  const result = results[0];
 
-  if (!existingSample) {
-    return null;
-  }
+  const newSample: fos.SampleData = {
+    sample: result.sample,
+    aspectRatio: result.aspect_ratio,
+    frameRate: result.frame_rate,
+    frameNumber: result.sample.frame_number,
+    urls: Object.fromEntries(result.urls.map(({ field, url }) => [field, url])),
+    thumbnailsOnly: false,
+  };
 
-  if (!existingSample.thumbnailsOnly) {
-    return existingSample;
-  } else {
-    // Query for the full sample from the backend
-    const { zoom, ...params } = await snapshot.getPromise(
-      pageParameters(/* modal= */ true)
-    );
-
-    const { results } = (await getFetchFunction()("POST", "/samples", {
-      ...params,
-      sample_id: sampleId,
-    })) as SamplesResponse;
-    const result = results[0];
-
-    const newSample: fos.SampleData = {
-      sample: result.sample,
-      aspectRatio: result.aspect_ratio,
-      frameRate: result.frame_rate,
-      frameNumber: result.sample.frame_number,
-      urls: Object.fromEntries(
-        result.urls.map(({ field, url }) => [field, url])
-      ),
-      thumbnailsOnly: false,
-    };
-
-    // Save the new sample in the global store
-    store.samples.set(result.sample._id, newSample);
-    return newSample;
-  }
+  // Save the new sample in the global store
+  store.samples.set(result.sample._id, newSample);
+  return newSample;
 }
 
 export default <T extends fos.Lookers>(store: fos.LookerStore<T>) => {
   const expandSample = fos.useExpandSample();
   const setSample = fos.useSetExpandedSample(false);
   const clear = fos.useClearModal();
+  // ID of the sample currently shown in the modal
+  const currentSampleId = useRef<string | null>(null);
 
   return useRecoilCallback(
     ({ snapshot }) =>
@@ -79,6 +66,27 @@ export default <T extends fos.Lookers>(store: fos.LookerStore<T>) => {
         itemIndexMap: ItemIndexMap
       ): Promise<void> => {
         const clickedIndex = itemIndexMap[sampleId];
+        // Cache the page parameters so that we don't need `snapshot` (which
+        // is released once the useRecoilCallback ends) to async load samples.
+        const pageParams = await snapshot.getPromise(
+          pageParameters(/* modal= */ true)
+        );
+
+        // Get the full sample if the existing sample has thumbnails only.
+        // Then set it in the modal if the user hasn't navigated away.
+        const getAndSetFullSampleIfNeeded = (
+          existingSample: fos.SampleData
+        ) => {
+          if (existingSample.thumbnailsOnly) {
+            const sampleId = existingSample.sample._id;
+            getFullSample(store, pageParams, sampleId).then((sample) => {
+              // The ID of the sample in the modal must match the queried sample
+              if (currentSampleId.current === sampleId) {
+                setSample(sample, { index: clickedIndex, getIndex });
+              }
+            });
+          }
+        };
 
         // getIndex is called when clicking the left/right arrows in the modal
         const getIndex = (index: number) => {
@@ -94,22 +102,29 @@ export default <T extends fos.Lookers>(store: fos.LookerStore<T>) => {
                   throw new Error("unable to paginate to next sample");
                 }
 
-                const sample = await getFullSample(store, snapshot, sampleId);
-                if (!sample) {
+                const existingSample = store.samples.get(sampleId);
+                if (existingSample == null) {
                   throw new Error(`sample does not exist (id=${sampleId})`);
                 }
+                currentSampleId.current = sampleId;
+                setSample(existingSample, { index, getIndex });
 
-                setSample(sample, { index, getIndex });
+                // Query for the full sample if needed
+                getAndSetFullSampleIfNeeded(existingSample);
               })
             : clear();
         };
 
-        const sample = await getFullSample(store, snapshot, sampleId);
-        if (!sample) {
+        // Show the existing sample first
+        const existingSample = store.samples.get(sampleId);
+        if (existingSample == null) {
           throw new Error(`sample does not exist (id=${sampleId})`);
         }
+        currentSampleId.current = sampleId;
+        expandSample(existingSample, { index: clickedIndex, getIndex });
 
-        expandSample(sample, { index: clickedIndex, getIndex });
+        // Query for the full sample if needed
+        getAndSetFullSampleIfNeeded(existingSample);
       },
     [store]
   );
