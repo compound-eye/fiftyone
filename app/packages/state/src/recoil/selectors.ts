@@ -111,6 +111,16 @@ export const targets = selector({
   },
 });
 
+export const colors = selector({
+  key: "colors",
+  get: ({ get }) => {
+    return get(atoms.dataset).appConfig.colors || {};
+  },
+  cachePolicy_UNSTABLE: {
+    eviction: "most-recent",
+  },
+});
+
 export const getSkeleton = selector<(field: string) => KeypointSkeleton | null>(
   {
     key: "getSkeleton",

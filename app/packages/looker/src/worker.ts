@@ -408,6 +408,7 @@ const UPDATE_LABEL = {
       return;
     }
 
+    console.log(field, label, coloring);
     const overlay = new Uint32Array(label.map.image);
     const targets = new ARRAY_TYPES[label.map.data.arrayType](
       label.map.data.buffer

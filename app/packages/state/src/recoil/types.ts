@@ -83,6 +83,12 @@ export namespace State {
     paths: string[];
   }
 
+  export interface FieldColoring {
+    colormap: string;
+    wrap: string;
+    ignoreColor: string;
+  }
+
   export interface DatasetAppConfig {
     gridMediaField?: string;
     modalMediaField?: string;
@@ -91,6 +97,7 @@ export namespace State {
     sidebarGroups?: SidebarGroup[];
     sidebarMode?: "all" | "best" | "fast";
     gridThumbnailFields?: { [field: string]: string };
+    colors?: { [field: string]: FieldColoring };
   }
   export interface Dataset {
     id: string;
