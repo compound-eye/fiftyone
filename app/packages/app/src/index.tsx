@@ -130,7 +130,7 @@ const App: React.FC = ({}) => {
       {
         initializer: getDatasetName(contextRef.current),
         subscription,
-        events: [Events.DEACTIVATE_NOTEBOOK_CELL, Events.STATE_UPDATE],
+        events: [],
       }
     );
 
