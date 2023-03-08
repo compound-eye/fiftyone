@@ -1,3 +1,6 @@
 *
 !Dockerfile
 !dist
+!install.bash
+!requirements.txt
+!requirements/
