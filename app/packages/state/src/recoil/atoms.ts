@@ -162,7 +162,7 @@ export const colorPool = atom<string[]>({
 
 export const colorSeed = atomFamily<number, boolean>({
   key: "colorSeed",
-  default: 1,
+  default: 0,
 });
 
 export const appTeamsIsOpen = atom({
