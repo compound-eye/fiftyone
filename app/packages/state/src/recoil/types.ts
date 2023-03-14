@@ -1,4 +1,4 @@
-import { StrictField } from "@fiftyone/utilities";
+import { RGB, RGBA, StrictField } from "@fiftyone/utilities";
 
 export namespace State {
   export type MediaType = "image" | "group" | "point_cloud" | "video";
@@ -83,6 +83,11 @@ export namespace State {
     paths: string[];
   }
 
+  export interface FieldColoring {
+    colorMap: RGB[];
+    colorPool: RGB[];
+  }
+
   export interface DatasetAppConfig {
     gridMediaField?: string;
     modalMediaField?: string;
@@ -91,6 +96,7 @@ export namespace State {
     sidebarGroups?: SidebarGroup[];
     sidebarMode?: "all" | "best" | "fast";
     gridThumbnailFields?: { [field: string]: string };
+    colors?: { [field: string]: FieldColoring };
   }
   export interface Dataset {
     id: string;
