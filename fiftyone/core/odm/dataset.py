@@ -318,6 +318,10 @@ class DatasetAppConfig(EmbeddedDocument):
         grid_thumbnail_fields ({}): an optional dict mapping sample fields to
             sample thumbnail fields (where the thumbnail fields contain string
             paths to the thumbnail images on disk)
+        colors ({}): an optional dict mapping sample fields to per-field color
+            configs. Per-field color configs can contain the keys `colormap`,
+            `wrap`, `ignore_color`. For details, see `State.FieldColoring` in
+            `app/packages/state/src/recoil/types.ts`.
     """
 
     # strict=False lets this class ignore unknown fields from other versions
@@ -332,6 +336,7 @@ class DatasetAppConfig(EmbeddedDocument):
     )
     plugins = DictField()
     grid_thumbnail_fields = DictField()
+    colors = DictField()
 
     @staticmethod
     def default_sidebar_groups(sample_collection):

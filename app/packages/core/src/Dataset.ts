@@ -30,6 +30,7 @@ const DatasetQuery = graphql`
           name
         }
         gridThumbnailFields
+        colors
       }
       sampleFields {
         ftype
