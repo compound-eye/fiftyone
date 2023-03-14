@@ -241,6 +241,7 @@ class DatasetAppConfig:
     spaces: t.Optional[JSON]
     color_scheme: t.Optional[ColorScheme]
     grid_thumbnail_fields: t.Optional[JSON]
+    colors: t.Optional[JSON]
 
 
 @gql.type
