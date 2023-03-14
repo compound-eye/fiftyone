@@ -175,6 +175,7 @@ type DatasetAppConfig {
   spaces: JSON
   colorScheme: ColorScheme
   gridThumbnailFields: JSON
+  colors: JSON
 }
 
 type DatasetStrConnection {
