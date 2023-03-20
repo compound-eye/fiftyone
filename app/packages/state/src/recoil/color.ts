@@ -35,6 +35,7 @@ export const coloring = selectorFamily<Coloring, boolean>({
         targets: new Array(pool.length)
           .fill(0)
           .map((_, i) => getColor(pool, seed, i)),
+        colors: get(selectors.colors),
       };
     },
   cachePolicy_UNSTABLE: {

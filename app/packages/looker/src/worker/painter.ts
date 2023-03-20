@@ -105,6 +105,9 @@ export const PainterFactory = (requestColor) => ({
       label.map.data.buffer
     );
 
+    const fieldColors = coloring.colors[field] ?? {};
+    const colormap = fieldColors["color_map"] ?? coloring.scale;
+
     const [start, stop] = label.range
       ? label.range
       : isFloatArray(targets)
@@ -124,14 +127,11 @@ export const PainterFactory = (requestColor) => ({
             return 0;
           }
 
-            const index = Math.round(
-              ((value - start) / (stop - start)) * (coloring.scale.length - 1)
+            const index = clamp(
+              0, colormap.length - 1,
+              ((value - start) / (stop - start)) * (colormap.length - 1)
             );
-            if (index < 0 || index >= coloring.scale.length) {
-              return 0;
-            }
-
-            return get32BitColor(coloring.scale[index]);
+            return get32BitColor(colormap[index]);
           }
         : (value) => {
             const alpha = clamp(0, 1, (value - start) / (stop - start));
@@ -224,11 +224,13 @@ export const PainterFactory = (requestColor) => ({
         );
       }
 
+      const fieldColors = coloring.colors[field] ?? {};
+      const colorPool = fieldColors["color_pool"] ?? coloring.targets;
       const getColor = (i) => {
-        i = Math.round(Math.abs(i)) % coloring.targets.length;
+        i = Math.round(Math.abs(i)) % colorPool.length;
 
         if (!(i in cache)) {
-          cache[i] = get32BitColor(coloring.targets[i]);
+          cache[i] = get32BitColor(colorPool[i]);
         }
 
         return cache[i];
