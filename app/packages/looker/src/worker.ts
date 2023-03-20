@@ -408,8 +408,6 @@ const UPDATE_LABEL = {
       return;
     }
 
-    const fieldColors = coloring.colors[field] ?? {};
-    const colormap = fieldColors["color_map"] ?? coloring.scale;
     const overlay = new Uint32Array(label.map.image);
     const targets = new ARRAY_TYPES[label.map.data.arrayType](
       label.map.data.buffer
@@ -420,14 +418,18 @@ const UPDATE_LABEL = {
       ? [0, 1]
       : [0, 255];
 
-    const color = await requestColor(coloring.pool, coloring.seed, field);
+    const fieldColors = coloring.colors[field] ?? {};
+    const colormap = fieldColors["color_map"] ?? coloring.scale;
+    const ignoreValue = label.ignore ?? NaN;
+    const ignoreColor = fieldColors["ignore_color"] ?? [0, 0, 0, 0];
 
+    const color = await requestColor(coloring.pool, coloring.seed, field);
     const getColor =
       coloring.by === "label"
         ? // If coloring by label, lookup the index from the colormap
           (value) => {
-            if (isNaN(value)) {
-              return 0;
+            if (isNaN(value) || value === ignoreValue) {
+              return get32BitColor(ignoreColor);
             }
 
             const index = clamp(
