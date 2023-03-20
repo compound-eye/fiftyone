@@ -105,9 +105,6 @@ export const PainterFactory = (requestColor) => ({
       label.map.data.buffer
     );
 
-    const fieldColors = coloring.colors[field] ?? {};
-    const colormap = fieldColors["color_map"] ?? coloring.scale;
-
     const [start, stop] = label.range
       ? label.range
       : isFloatArray(targets)
@@ -116,6 +113,11 @@ export const PainterFactory = (requestColor) => ({
 
     const setting = customizeColorSetting?.find((s) => s.path === field);
 
+    const fieldColors = coloring.colors[field] ?? {};
+    const colormap = fieldColors["color_map"] ?? coloring.scale;
+    const ignoreValue = label.ignore ?? NaN;
+    const ignoreColor = fieldColors["ignore_color"] ?? [0, 0, 0, 0];
+
     const color =
       setting?.fieldColor ??
       (await requestColor(coloring.pool, coloring.seed, field));
@@ -123,8 +125,8 @@ export const PainterFactory = (requestColor) => ({
     const getColor =
       coloring.by === "value"
         ? (value) => {
-          if (isNaN(value)) {
-            return 0;
+          if (isNaN(value) || value === ignoreValue) {
+            return get32BitColor(ignoreColor);
           }
 
             const index = clamp(
