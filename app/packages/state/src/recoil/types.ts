@@ -1,5 +1,5 @@
 import { SpaceNodeJSON } from "@fiftyone/spaces";
-import { StrictField } from "@fiftyone/utilities";
+import { RGB, StrictField } from "@fiftyone/utilities";
 
 export namespace State {
   export type MediaType = "image" | "group" | "point_cloud" | "video";
@@ -113,6 +113,11 @@ export namespace State {
     orderBy?: string;
   }
 
+  export interface FieldColoring {
+    colorMap: RGB[];
+    colorPool: RGB[];
+  }
+
   export interface DatasetAppConfig {
     gridMediaField?: string;
     modalMediaField?: string;
@@ -122,6 +127,7 @@ export namespace State {
     sidebarMode?: "all" | "best" | "fast";
     colorScheme?: ColorScheme;
     gridThumbnailFields?: { [field: string]: string };
+    colors?: { [field: string]: FieldColoring };
   }
 
   /**

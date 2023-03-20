@@ -19,6 +19,9 @@ export interface Coloring {
   maskTargets: {
     [field: string]: MaskTargets;
   };
+  colors: {
+    [field: string]: State.FieldColoring;
+  };
   points: boolean;
   targets: string[];
 }
@@ -347,6 +350,7 @@ const DEFAULT_BASE_OPTIONS: BaseOptions = {
     maskTargets: {},
     defaultMaskTargets: null,
     targets: ["#000000"],
+    colors: {},
   },
   customizeColorSetting: [],
   smoothMasks: true,
