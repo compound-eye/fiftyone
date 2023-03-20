@@ -30,8 +30,18 @@ export const getRGB = (color: string): RGB => {
   return [r, g, b];
 };
 
-export const get32BitColor = (color: string | RGB, alpha: number = 1) => {
-  alpha = Math.round(alpha * 255);
+export const get32BitColor = (color: string | RGB | RGBA, alpha?: number) => {
+  if (Array.isArray(color) && color.length === 4 && alpha == null) {
+    // Use the input color's alpha if the alpha paramter is unspecified
+    alpha = color[3];
+  } else if (alpha == null) {
+    // Default alpha
+    alpha = 255;
+  } else {
+    // Convert input alpha from [0, 1] to [0, 255]
+    alpha = Math.round(alpha * 255);
+  }
+
   const key = `${color}${alpha}`;
   if (key in bitColorCache) {
     return bitColorCache[key];

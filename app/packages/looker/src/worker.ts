@@ -408,6 +408,8 @@ const UPDATE_LABEL = {
       return;
     }
 
+    const fieldColors = coloring.colors[field] ?? {};
+    const colormap = fieldColors["color_map"] ?? coloring.scale;
     const overlay = new Uint32Array(label.map.image);
     const targets = new ARRAY_TYPES[label.map.data.arrayType](
       label.map.data.buffer
@@ -430,12 +432,12 @@ const UPDATE_LABEL = {
 
             const index = clamp(
               0,
-              coloring.scale.length - 1,
+              colormap.length - 1,
               Math.round(
-                ((value - start) / (stop - start)) * (coloring.scale.length - 1)
+                ((value - start) / (stop - start)) * (colormap.length - 1)
               )
             );
-            return get32BitColor(coloring.scale[index]);
+            return get32BitColor(colormap[index]);
           }
         : // If coloring by field, convert value to alpha
           (value) => {
@@ -457,25 +459,25 @@ const UPDATE_LABEL = {
     const targets = new ARRAY_TYPES[label.mask.data.arrayType](
       label.mask.data.buffer
     );
-    let maskTargets = coloring.maskTargets[field];
 
-    if (!maskTargets) {
-      maskTargets = coloring.defaultMaskTargets;
-    }
+    // If `maskTargets` contains a single color, then pre-calculate that color
+    const maskTargets =
+      coloring.maskTargets[field] ?? coloring.defaultMaskTargets;
+
+    const maskTargetColor =
+      maskTargets != null && Object.keys(maskTargets).length === 1
+        ? get32BitColor(await requestColor(coloring.pool, coloring.seed, field))
+        : null;
+
+    const fieldColors = coloring.colors[field] ?? {};
+    const colorPool = fieldColors["color_pool"] ?? coloring.targets;
+
     const cache = {};
-
-    let color;
-    if (maskTargets && Object.keys(maskTargets).length === 1) {
-      color = get32BitColor(
-        await requestColor(coloring.pool, coloring.seed, field)
-      );
-    }
-
     const getColor = (i) => {
-      i = Math.round(Math.abs(i)) % coloring.targets.length;
+      i = Math.round(Math.abs(i)) % colorPool.length;
 
       if (!(i in cache)) {
-        cache[i] = get32BitColor(coloring.targets[i]);
+        cache[i] = get32BitColor(colorPool[i]);
       }
 
       return cache[i];
@@ -483,7 +485,8 @@ const UPDATE_LABEL = {
 
     // these for loops must be fast. no "in" or "of" syntax
     for (let i = 0; i < overlay.length; i++) {
-      overlay[i] = color ? color : getColor(targets[i]);
+      overlay[i] =
+        maskTargetColor != null ? maskTargetColor : getColor(targets[i]);
     }
   },
 };
