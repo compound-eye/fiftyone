@@ -31,7 +31,9 @@ SOURCE_ETA_INSTALL=false
 SCRATCH_MONGODB_INSTALL=false
 BUILD_APP=true
 VOXEL51_INSTALL=false
-while getopts "hdempv" FLAG; do
+# Only install Python dependencies, skip git setup
+DEPS_ONLY=false
+while getopts "hdempvo" FLAG; do
     case "${FLAG}" in
         h) SHOW_HELP=true ;;
         d) DEV_INSTALL=true ;;
@@ -39,6 +41,7 @@ while getopts "hdempv" FLAG; do
         m) SCRATCH_MONGODB_INSTALL=true ;;
         v) VOXEL51_INSTALL=true ;;
         p) BUILD_APP=false ;;
+        o) DEPS_ONLY=true ;;
         *) usage ;;
     esac
 done
@@ -103,11 +106,15 @@ echo "***** INSTALLING FIFTYONE *****"
 if [ ${DEV_INSTALL} = true ] || [ ${VOXEL51_INSTALL} = true ]; then
     echo "Performing dev install"
     pip install -r requirements/dev.txt
-    pre-commit install
-    pip install -e .
+    if [ ${DEPS_ONLY} = false ]; then
+        pre-commit install
+        pip install -e .
+    fi
 else
     pip install -r requirements.txt
-    pip install .
+    if [ ${DEPS_ONLY} = false ]; then
+        pip install .
+    fi
 fi
 
 if [ ${SOURCE_ETA_INSTALL} = true ]; then
@@ -130,21 +137,21 @@ if [ ${SOURCE_ETA_INSTALL} = true ]; then
 fi
 
 # Do this last since `source` can exit Python virtual environments
+echo "***** INSTALLING FIFTYONE-APP *****"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+nvm install ${NODE_VERSION}
+nvm use ${NODE_VERSION}
+npm -g install yarn
+if [ -f ~/.bashrc ]; then
+    source ~/.bashrc
+elif [ -f ~/.bash_profile ]; then
+    source ~/.bash_profile
+else
+    echo "WARNING: unable to locate a bash profile to 'source'; you may need to start a new shell"
+fi
 if [ ${BUILD_APP} = true ]; then
-    echo "***** INSTALLING FIFTYONE-APP *****"
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-    nvm install ${NODE_VERSION}
-    nvm use ${NODE_VERSION}
-    npm -g install yarn
-    if [ -f ~/.bashrc ]; then
-        source ~/.bashrc
-    elif [ -f ~/.bash_profile ]; then
-        source ~/.bash_profile
-    else
-        echo "WARNING: unable to locate a bash profile to 'source'; you may need to start a new shell"
-    fi
     cd app
     echo "Building the App. This will take a minute or two..."
     yarn install > /dev/null 2>&1

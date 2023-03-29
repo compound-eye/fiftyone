@@ -51,6 +51,7 @@ RUN apt -y update \
         ca-certificates \
         cmake \
         cmake-data \
+        git \
         pkg-config \
         libcurl4 \
         libsm6 \
@@ -62,6 +63,8 @@ RUN apt -y update \
         zlib1g-dev \
         unzip \
         curl \
+        tmux \
+        vim \
         wget \
         python${PYTHON_VERSION} \
         python${PYTHON_VERSION}-dev \
@@ -88,14 +91,14 @@ RUN apt -y update \
 #   pydicom: DICOM images
 #
 
-RUN pip --no-cache-dir install --upgrade pip setuptools wheel ipython
+RUN pip --no-cache-dir install --upgrade pip setuptools wheel pycocotools
 
 #
 # Install FiftyOne from source
 #
 
-COPY dist dist
-RUN pip --no-cache-dir install dist/*.whl && rm -rf dist
+# COPY dist dist
+# RUN pip --no-cache-dir install dist/*.whl && rm -rf dist
 
 # Use this instead if you want the latest FiftyOne release
 # RUN pip --no-cache-dir install fiftyone
@@ -104,20 +107,50 @@ RUN pip --no-cache-dir install dist/*.whl && rm -rf dist
 # Configure shared storage
 #
 
+# Set up user
+ARG USER=docker
+ARG GROUP=docker
+RUN addgroup --gid 1000 $GROUP && \
+    adduser --uid 1000 --ingroup $GROUP --home /home/$USER --shell /bin/sh --disabled-password --gecos "" $USER
+ENV PATH="${PATH}:/home/${USER}/.local/bin"
+
+# Install fixuid
+RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.5.1/fixuid-0.5.1-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
+    chown root:root /usr/local/bin/fixuid && \
+    chmod 4755 /usr/local/bin/fixuid && \
+    mkdir -p /etc/fixuid && \
+    printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
+
 # The name of the shared directory in the container that should be
 # volume-mounted by users to persist data loaded into FiftyOne
 ARG ROOT_DIR=/fiftyone
+RUN mkdir /fiftyone && chown $USER:$GROUP /fiftyone
 
 ENV FIFTYONE_DATABASE_DIR=${ROOT_DIR}/db \
     FIFTYONE_DEFAULT_DATASET_DIR=${ROOT_DIR}/default \
     FIFTYONE_DATASET_ZOO_DIR=${ROOT_DIR}/zoo/datasets \
     FIFTYONE_MODEL_ZOO_DIR=${ROOT_DIR}/zoo/models
 
+# Run the remaining commands as the user
+USER docker
+
+# Install tools to develop fiftyone from source
+COPY --chown=$USER:$GROUP --chmod=0755 ./install.bash /tmp/
+COPY --chown=$USER:$GROUP ./requirements.txt /tmp/
+COPY --chown=$USER:$GROUP ./requirements/ /tmp/requirements/
+WORKDIR /tmp/
+RUN /tmp/install.bash -e -p -o
+
+ARG SOURCE_DIR=/src
+ENV PYTHONPATH=$SOURCE_DIR
+
 #
 # Default behavior
 #
 
-CMD ipython
+WORKDIR $SOURCE_DIR
+USER $USER:$GROUP
+ENTRYPOINT ["fixuid"]
 
 # Use this if you want the default behavior to instead be to launch the App
 # CMD python /usr/local/lib/python/dist-packages/fiftyone/server/main.py --port 5151

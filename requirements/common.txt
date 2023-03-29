@@ -11,7 +11,7 @@ hypercorn==0.13.2
 importlib-metadata==1.4.0; python_version<"3.8"
 Jinja2==3.0.3
 kaleido==0.2.1
-matplotlib==3.5.2
+matplotlib==3.7.1
 mongoengine==0.24.2
 motor>=2.5
 packaging==20.3
