@@ -4,9 +4,11 @@ import { v4 as uuid } from "uuid";
 
 import Flashlight from "@fiftyone/flashlight";
 import { freeVideos } from "@fiftyone/looker";
+import * as atoms from "@fiftyone/state";
 
 import { flashlightLooker } from "./Grid.module.css";
 import { rowAspectRatioThreshold } from "./recoil";
+import useLocationHash from "./useLocationHash";
 import useResize from "./useResize";
 import usePage from "./usePage";
 import useExpandSample from "./useExpandSample";
@@ -28,6 +30,14 @@ const Grid: React.FC<{}> = () => {
   const [next, pager] = usePage(false, store);
   const threshold = useRecoilValue(rowAspectRatioThreshold);
   const resize = useResize();
+
+  const { hash, changeHash } = useLocationHash();
+  const modal = useRecoilValue(atoms.modal);
+
+  // If the hash changes, and a modal is not yet shown, expand the sample
+  useEffect(() => {
+    // TODO
+  }, [hash]);
 
   const [flashlight] = useState(() => {
     const flashlight = new Flashlight<number>({

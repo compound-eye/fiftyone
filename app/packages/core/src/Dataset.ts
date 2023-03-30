@@ -116,6 +116,7 @@ export function usePrepareDataset(dataset, setReady) {
   const router = useContext(fos.RouterContext);
 
   useLayoutEffect(() => {
+    console.log("Dataset.ts:router", router);
     const { colorscale, config, state } = router.state;
     if (dataset) {
       update(() => {

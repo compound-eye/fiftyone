@@ -12,7 +12,12 @@ const useTo = (state: any) => {
   return {
     pending,
     to: useCallback(
-      (to: string) => start(() => goTo(router, to, state)),
+      (to: string) =>
+        start(() => {
+          // Preserve the url hash
+          const withHash = to + window.location.hash;
+          return goTo(router, withHash, state);
+        }),
       [router, state]
     ),
   };

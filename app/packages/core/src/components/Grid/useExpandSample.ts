@@ -6,6 +6,7 @@ import * as fos from "@fiftyone/state";
 import { getFetchFunction } from "@fiftyone/utilities";
 
 import { PageParameters, pageParameters } from "./recoil";
+import useLocationHash from "./useLocationHash";
 
 /**
  * Pyton object returned from the `/samples` API.
@@ -57,6 +58,7 @@ export default <T extends fos.Lookers>(store: fos.LookerStore<T>) => {
   const clear = fos.useClearModal();
   // ID of the sample currently shown in the modal
   const currentSampleId = useRef<string | null>(null);
+  const { hash, changeHash } = useLocationHash();
 
   return useRecoilCallback(
     ({ snapshot }) =>
@@ -121,6 +123,7 @@ export default <T extends fos.Lookers>(store: fos.LookerStore<T>) => {
           throw new Error(`sample does not exist (id=${sampleId})`);
         }
         currentSampleId.current = sampleId;
+        //changeHash(sampleId);
         expandSample(existingSample, { index: clickedIndex, getIndex });
 
         // Query for the full sample if needed

@@ -105,8 +105,8 @@ const App: React.FC = ({}) => {
               const path = state.dataset
                 ? `/datasets/${encodeURIComponent(state.dataset)}${
                     window.location.search
-                  }`
-                : `/${window.location.search}`;
+                  }${window.location.hash}`
+                : `/${window.location.search}${window.location.hash}`;
 
               contextRef.current.history.replace(path, {
                 state,
