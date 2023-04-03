@@ -27,7 +27,8 @@ const ScalarDiv = styled.div`
     font-weight: bold;
     padding: 0 3px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: break-word;
+    text-overflow: clip;
   }
 `;
 
@@ -356,7 +357,12 @@ const Loadable = ({ path }: { path: string }) => {
   const formatted = format({ ftype, value, timeZone });
 
   return (
-    <div data-cy={`sidebar-entry-${path}`} style={none ? { color } : {}}>
+    <div
+      data-cy={`sidebar-entry-${path}`}
+      style={none ? { color } : {}}
+      // show the full text on hover
+      title={value != null ? value.toString() : undefined}
+    >
       {none ? "None" : formatted}
     </div>
   );
