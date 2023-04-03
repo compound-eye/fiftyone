@@ -31,7 +31,8 @@ const ScalarDiv = styled.div`
     font-weight: bold;
     padding: 0 3px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: break-word;
+    text-overflow: clip;
   }
 `;
 
@@ -221,7 +222,15 @@ const Loadable = ({ path }: { path: string }) => {
   const timeZone = useRecoilValue(fos.timeZone);
   const formatted = format({ ftype, value, timeZone });
 
-  return <div style={none ? { color } : {}}>{none ? "None" : formatted}</div>;
+  return (
+    <div
+      style={none ? { color } : {}}
+      // show the full text on hover
+      title={value != null ? value.toString() : undefined}
+    >
+      {none ? "None" : formatted}
+    </div>
+  );
 };
 
 const useData = <T extends unknown>(path: string): T => {
