@@ -51,7 +51,7 @@ export const pageParameters = selector({
           : null,
       },
       extendedStages: get(fos.extendedStages),
-      thumbnails_only: false,
+      thumbnailsOnly: true,
     };
     return (page: number, pageSize: number) => {
       return {
