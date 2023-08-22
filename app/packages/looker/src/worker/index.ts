@@ -18,7 +18,7 @@ import {
 import { decode as decodePng } from "fast-png";
 import { decode as decodeJpg } from "jpeg-js";
 import { CHUNK_SIZE } from "../constants";
-import { OverlayMask } from "../numpy";
+import { parse as parseNumpy, OverlayMask } from "../numpy";
 import {
   BaseConfig,
   Coloring,
@@ -144,40 +144,48 @@ const imputeOverlayFromPath = async (
     "arrayBuffer"
   );
 
-  let overlayData;
+  const getOverlayMask = (): OverlayMask => {
+    if (overlayImageUrl.endsWith(".npy")) {
+      return parseNumpy(new Uint8Array(overlayImageBuffer));
+    }
 
-  if (overlayImageUrl.endsWith(".jpg")) {
-    overlayData = decodeJpg(overlayImageBuffer, { useTArray: true });
-  } else {
-    overlayData = decodePng(overlayImageBuffer);
-  }
+    let overlayData;
 
-  if (overlayData.palette?.length) {
-    overlayData.data = indexedPngBufferToRgb(
-      overlayData.data,
-      overlayData.depth,
-      overlayData.palette
-    );
-    overlayData.channels = 3;
-  }
+    if (overlayImageUrl.endsWith(".jpg")) {
+      overlayData = decodeJpg(overlayImageBuffer, { useTArray: true });
+    } else {
+      overlayData = decodePng(overlayImageBuffer);
+    }
 
-  const width = overlayData.width;
-  const height = overlayData.height;
+    if (overlayData.palette?.length) {
+      overlayData.data = indexedPngBufferToRgb(
+        overlayData.data,
+        overlayData.depth,
+        overlayData.palette
+      );
+      overlayData.channels = 3;
+    }
 
-  const numChannels =
-    overlayData.channels ?? overlayData.data.length / (width * height);
+    const width = overlayData.width;
+    const height = overlayData.height;
 
-  const overlayMask: OverlayMask = {
-    buffer: overlayData.data.buffer,
-    channels: numChannels,
-    arrayType: overlayData.data.constructor.name as OverlayMask["arrayType"],
-    shape: [height, width],
+    const numChannels =
+      overlayData.channels ?? overlayData.data.length / (width * height);
+
+    return {
+      buffer: overlayData.data.buffer,
+      channels: numChannels,
+      arrayType: overlayData.data.constructor.name as OverlayMask["arrayType"],
+      shape: [height, width],
+    };
   };
+
+  const overlayMask = getOverlayMask();
 
   // set the `mask` property for this label
   label[overlayField] = {
     data: overlayMask,
-    image: new ArrayBuffer(width * height * 4),
+    image: new ArrayBuffer(overlayMask.shape[0] * overlayMask.shape[1] * 4),
   };
 
   // transfer buffers
