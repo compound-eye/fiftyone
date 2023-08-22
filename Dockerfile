@@ -131,25 +131,24 @@ ENV FIFTYONE_DATABASE_DIR=${ROOT_DIR}/db \
     FIFTYONE_DATASET_ZOO_DIR=${ROOT_DIR}/zoo/datasets \
     FIFTYONE_MODEL_ZOO_DIR=${ROOT_DIR}/zoo/models
 
-# Run the remaining commands as the user
-USER docker
-
-# Install tools to develop fiftyone from source
-COPY --chown=$USER:$GROUP --chmod=0755 ./install.bash /tmp/
-COPY --chown=$USER:$GROUP ./requirements.txt /tmp/
-COPY --chown=$USER:$GROUP ./requirements/ /tmp/requirements/
-WORKDIR /tmp/
-RUN /tmp/install.bash -e -p -o
-
-ARG SOURCE_DIR=/src
-ENV PYTHONPATH=$SOURCE_DIR
-
-#
-# Default behavior
-#
-
+# Mount the repo and run the install script
+ARG SOURCE_DIR=/src51
 WORKDIR $SOURCE_DIR
+# RUN --mount=type=bind always mounts as root, and does not support uid/gid
+# options. Additionally, writes are not persisted to disk.
+# See https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#run---mounttypebind
+RUN --mount=type=bind,source=.,target=$SOURCE_DIR,readwrite \
+    chown $USER:$GROUP $SOURCE_DIR && \
+    runuser -l $USER -c "cd /src51 && ./install.bash -e -p"
+
+# Run the remaining commands as the user
 USER $USER:$GROUP
+
+# Run import fiftyone once to trigger first-time database migration
+RUN python -c "import fiftyone"
+
+# Default behavior
+WORKDIR $SOURCE_DIR
 ENTRYPOINT ["fixuid"]
 
 # Use this if you want the default behavior to instead be to launch the App

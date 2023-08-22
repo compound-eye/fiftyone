@@ -1,6 +1,9 @@
-*
-!Dockerfile
-!dist
-!install.bash
-!requirements.txt
-!requirements/
+# Directories to ignore from the Docker build context
+# Calling COPY or RUN --mount=type=bind is slow if the build context is large.
+.git/
+app/.yarn/
+build/
+dist/
+fiftyone.egg-info/
+**/node_modules/
+**/__pycache__/

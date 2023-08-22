@@ -32,7 +32,6 @@ SCRATCH_MONGODB_INSTALL=false
 BUILD_APP=true
 VOXEL51_INSTALL=false
 # Only install Python dependencies, skip git setup
-DEPS_ONLY=false
 while getopts "hdempvo" FLAG; do
     case "${FLAG}" in
         h) SHOW_HELP=true ;;
@@ -41,7 +40,6 @@ while getopts "hdempvo" FLAG; do
         m) SCRATCH_MONGODB_INSTALL=true ;;
         v) VOXEL51_INSTALL=true ;;
         p) BUILD_APP=false ;;
-        o) DEPS_ONLY=true ;;
         *) usage ;;
     esac
 done
@@ -106,15 +104,11 @@ echo "***** INSTALLING FIFTYONE *****"
 if [ ${DEV_INSTALL} = true ] || [ ${VOXEL51_INSTALL} = true ]; then
     echo "Performing dev install"
     pip install -r requirements/dev.txt
-    if [ ${DEPS_ONLY} = false ]; then
-        pre-commit install
-        pip install -e .
-    fi
+    pre-commit install
+    pip install -e .
 else
     pip install -r requirements.txt
-    if [ ${DEPS_ONLY} = false ]; then
-        pip install .
-    fi
+    pip install .
 fi
 
 if [ ${SOURCE_ETA_INSTALL} = true ]; then
