@@ -1469,13 +1469,19 @@ _LABEL_LIST_TO_SINGLE_MAP = {
 
 
 def _read_mask(mask_path):
-    # pylint: disable=no-member
-    return foui.read(mask_path, flag=cv2.IMREAD_UNCHANGED)
+    if mask_path.endswith(".npy"):
+        return np.load(mask_path)
+    else:
+        # pylint: disable=no-member
+        return foui.read(mask_path, flag=cv2.IMREAD_UNCHANGED)
 
 
 def _write_mask(mask, mask_path):
-    mask = _mask_to_image(mask)
-    foui.write(mask, mask_path)
+    if mask_path.endswith(".npy"):
+        np.save(mask_path, mask)
+    else:
+        mask = _mask_to_image(mask)
+        foui.write(mask, mask_path)
 
 
 def _transform_mask(in_mask, targets_map):
@@ -1529,13 +1535,19 @@ def _mask_to_image(mask):
 
 
 def _read_heatmap(map_path):
-    # pylint: disable=no-member
-    return foui.read(map_path, flag=cv2.IMREAD_UNCHANGED)
+    if map_path.endswith(".npy"):
+        return np.load(map_path)
+    else:
+        # pylint: disable=no-member
+        return foui.read(map_path, flag=cv2.IMREAD_UNCHANGED)
 
 
 def _write_heatmap(map, map_path, range):
-    map = _heatmap_to_image(map, range)
-    foui.write(map, map_path)
+    if map_path.endswith(".npy"):
+        np.save(map_path, map)
+    else:
+        map = _heatmap_to_image(map, range)
+        foui.write(map, map_path)
 
 
 def _heatmap_to_image(map, range):

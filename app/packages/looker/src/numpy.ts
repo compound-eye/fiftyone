@@ -5,7 +5,7 @@
 import { Buffer } from "buffer";
 import pako from "./pako.js";
 
-export { deserialize };
+export { deserialize, parse };
 
 export const ARRAY_TYPES = {
   Uint8Array,
