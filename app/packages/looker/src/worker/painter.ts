@@ -125,13 +125,16 @@ export const PainterFactory = (requestColor) => ({
     const getColor =
       coloring.by === "value"
         ? (value) => {
-          if (isNaN(value) || value === ignoreValue) {
-            return get32BitColor(ignoreColor);
-          }
+            if (isNaN(value) || value === ignoreValue) {
+              return get32BitColor(ignoreColor);
+            }
 
             const index = clamp(
-              0, colormap.length - 1,
-              ((value - start) / (stop - start)) * (colormap.length - 1)
+              0,
+              colormap.length - 1,
+              Math.round(
+                ((value - start) / (stop - start)) * (colormap.length - 1)
+              )
             );
             return get32BitColor(colormap[index]);
           }

@@ -1,10 +1,9 @@
 import { FlashlightConfig } from "@fiftyone/flashlight";
-import type { Sample } from "@fiftyone/looker";
-import * as fos from "@fiftyone/state";
 import { getFetchFunction } from "@fiftyone/utilities";
 import { get } from "lodash";
 import { useRelayEnvironment } from "react-relay";
 import { RecoilState, selectorFamily, useRecoilCallback } from "recoil";
+import { State } from "../recoil/types";
 import * as atoms from "../recoil/atoms";
 import * as filterAtoms from "../recoil/filters";
 import * as groupAtoms from "../recoil/groups";
@@ -19,11 +18,11 @@ import useSetExpandedSample from "./useSetExpandedSample";
 import { groupSlice } from "../recoil/groups";
 
 interface PageParameters {
-  filters: fos.State.Filters;
+  filters: State.Filters;
   dataset: string;
-  view: fos.State.Stage[];
+  view: State.Stage[];
   zoom: boolean;
-  thumbnails_only: boolean;
+  thumbnailsOnly: boolean;
 }
 
 const pageParameters2 = selectorFamily<PageParameters, boolean>({
@@ -32,13 +31,13 @@ const pageParameters2 = selectorFamily<PageParameters, boolean>({
     (modal) =>
     ({ get }) => {
       return {
-        filters: get(modal ? fos.modalFilters : fos.filters),
-        view: get(fos.view),
-        dataset: get(fos.datasetName),
-        extended: get(fos.extendedStages),
-        zoom: get(fos.isPatchesView) && get(fos.cropToContent(modal)),
+        filters: get(modal ? filterAtoms.modalFilters : filterAtoms.filters),
+        view: get(viewAtoms.view),
+        dataset: get(selectors.datasetName),
+        extended: get(selectors.extendedStages),
+        zoom: get(viewAtoms.isPatchesView) && get(atoms.cropToContent(modal)),
         slice: get(groupSlice(false)),
-        thumbnails_only: !modal,
+        thumbnailsOnly: !modal,
       };
     },
 });
@@ -48,7 +47,7 @@ const pageParameters2 = selectorFamily<PageParameters, boolean>({
  */
 interface SamplesResponse {
   results: Array<{
-    sample: Sample & { frame_number?: number };
+    sample: any, //Sample & { frame_number?: number };
     aspect_ratio: number;
     frame_rate?: number;
     urls: Array<{ field: string; url: string }>;
@@ -61,11 +60,11 @@ interface SamplesResponse {
  *
  * Throws if the provided sampleId does not exist in the store.
  */
-async function getFullSample<T extends fos.Lookers>(
-  store: fos.LookerStore<T>,
+async function getFullSample<T extends Lookers>(
+  store: LookerStore<T>,
   pageParams: PageParameters,
   sampleId: string
-): Promise<fos.ModalSample | null> {
+): Promise<modalAtoms.ModalSample | null> {
   const existingSample = store.samples.get(sampleId);
 
   if (!existingSample) {
@@ -81,7 +80,7 @@ async function getFullSample<T extends fos.Lookers>(
     })) as SamplesResponse;
     const result = results[0];
 
-    const newSample: fos.ModalSample = {
+    const newSample: modalAtoms.ModalSample = {
       ...existingSample,
       sample: result.sample,
       urls: result.urls.map(({ field, url }) => ({field, url})),
@@ -185,7 +184,7 @@ export default <T extends Lookers>(store: LookerStore<T>) => {
         // Get the full sample if the existing sample has thumbnails only.
         // Then set it in the modal if the user hasn't navigated away.
         const getAndSetFullSampleIfNeeded = (
-          existingSample: fos.ModalSample
+          existingSample: modalAtoms.ModalSample
         ) => {
           if (existingSample.thumbnailsOnly) {
             const sampleId = existingSample.sample.id;

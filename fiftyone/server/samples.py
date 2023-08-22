@@ -189,4 +189,4 @@ async def _create_sample_item(
         for field, _ in dataset.app_config.grid_thumbnail_fields.items():
             sample.pop(field, None)
 
-    return from_dict(cls, {"id": sample["_id"], "sample": sample, **metadata})
+    return from_dict(cls, {"id": sample["_id"], "sample": sample, "thumbnails_only": thumbnails_only, **metadata})
