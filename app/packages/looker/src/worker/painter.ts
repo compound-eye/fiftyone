@@ -145,14 +145,12 @@ export const PainterFactory = (requestColor) => ({
 
     // these for loops must be fast. no "in" or "of" syntax
     for (let i = 0; i < overlay.length; i++) {
-      if (targets[i] !== 0) {
-        if (mapData.channels > 2) {
-          overlay[i] = getColor(
-            getRgbFromMaskData(targets, mapData.channels, i)[0]
-          );
-        } else {
-          overlay[i] = getColor(targets[i]);
-        }
+      if (mapData.channels > 2) {
+        overlay[i] = getColor(
+          getRgbFromMaskData(targets, mapData.channels, i)[0]
+        );
+      } else {
+        overlay[i] = getColor(targets[i]);
       }
     }
   },
@@ -243,16 +241,14 @@ export const PainterFactory = (requestColor) => ({
 
       // these for loops must be fast. no "in" or "of" syntax
       for (let i = 0; i < overlay.length; i++) {
-        if (targets[i] !== 0) {
-          if (
-            !(targets[i] in maskTargets) &&
-            !isMaskTargetsEmpty &&
-            !isRgbMaskTargets_
-          ) {
-            targets[i] = 0;
-          } else {
-            overlay[i] = color ? color : getColor(targets[i]);
-          }
+        if (
+          !(targets[i] in maskTargets) &&
+          !isMaskTargetsEmpty &&
+          !isRgbMaskTargets_
+        ) {
+          targets[i] = 0;
+        } else {
+          overlay[i] = color ? color : getColor(targets[i]);
         }
       }
     }
