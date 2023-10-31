@@ -48,6 +48,7 @@ const pageParams = selector({
           slices: get(groupCarouselSlices),
         },
       },
+      thumbnailsOnly: false,
     };
     return (page: number, pageSize: number) => {
       return {
@@ -74,7 +75,7 @@ const Column: React.FC = () => {
 
   const createLooker = fos.useCreateLooker(
     false,
-    true,
+    false,
     {
       ...opts,
       thumbnailTitle: (sample) => get(sample, groupField).name,

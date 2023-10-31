@@ -248,6 +248,7 @@ export const groupSamples = graphQLSelectorFamily<
           },
         },
         paginationData,
+        thumbnailsOnly: false,
       };
     },
   mapResponse: (data: ResponseFrom<foq.paginateSamplesQuery>) => {
