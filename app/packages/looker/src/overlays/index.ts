@@ -69,13 +69,15 @@ export const loadOverlays = <State extends BaseState>(
     for (const [fieldName, thumbnailFieldName] of Object.entries(
       gridThumbnailFields
     ) as ReadonlyArray<[string, string]>) {
-      overlays.push(
-        new ThumbnailOverlay(
-          fieldName,
-          thumbnailFieldName,
-          sample[thumbnailFieldName]
-        )
-      );
+      if (sample[thumbnailFieldName] != null) {
+        overlays.push(
+          new ThumbnailOverlay(
+            fieldName,
+            thumbnailFieldName,
+            sample[thumbnailFieldName]
+          )
+        );
+      }
     }
   }
 
